@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:5000/api/admin";
+const API = "https://multiserve-backend.onrender.com/api/admin";
 
 // Get all bookings
 export const getAllBookings = async () => {

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:5000/api/reviews";
+const API = "https://multiserve-backend.onrender.com/api/reviews";
 
 export const addReview = async (reviewData) => {
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:5000/api/notifications";
+const API = "https://multiserve-backend.onrender.com/api/notifications";
 
 export const getNotifications = async (userId) => {
     const res = await axios.get(`${API}/${userId}`);
