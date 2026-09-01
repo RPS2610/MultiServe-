@@ -323,7 +323,6 @@ function Navbar() {
                     lg:h-[92px]
                     flex
                     items-center
-                    justify-between
                 ">
 
 
@@ -424,15 +423,14 @@ function Navbar() {
                     {/* ================================================= */}
 
                     {user && (
-
-                        <div className="
-                            hidden
-                            md:flex
-                            items-center
-                            gap-2
-                            lg:gap-3
-                            ml-3
-                        ">
+    <div className="
+        hidden
+        md:flex
+        items-center
+        gap-2
+        lg:gap-3
+        ml-3
+    ">
 
 
                             {/* HOME */}
@@ -483,14 +481,13 @@ function Navbar() {
                     {/* ================================================= */}
 
                     <div className="
-                        flex
-                        items-center
-                        gap-1.5
-                        sm:gap-2
-                        lg:gap-3
-                        ml-auto
-                    ">
-
+    flex
+    items-center
+    gap-1.5
+    sm:gap-2
+    lg:gap-3
+    ml-auto
+">
 
                         {/* ================================================= */}
                         {/* MOBILE HOME */}
