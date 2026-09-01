@@ -1123,23 +1123,21 @@ function Navbar() {
                                 ">
 
                                     <Link
-                                        to="/register"
-                                        onClick={closeMobileMenu}
-                                        className="
-                                            block
-                                            w-full
-                                            text-center
-                                            px-4
-                                            py-3
-                                            rounded-xl
-                                            border
-                                            border-blue-600
-                                            text-blue-600
-                                            font-semibold
-                                        "
-                                    >
-                                        Register
-                                    </Link>
+    to="/register"
+    className="
+        hidden
+        sm:block
+        px-5
+        py-2.5
+        rounded-full
+        text-blue-600
+        font-semibold
+        hover:bg-blue-50
+        transition
+    "
+>
+    Register
+</Link>
 
 
                                     <Link
