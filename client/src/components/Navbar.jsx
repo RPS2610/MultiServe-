@@ -1115,60 +1115,55 @@ function Navbar() {
 
                             {!user && (
 
-                               <div className="
-    flex
-    items-center
-    gap-2
-    sm:gap-3
-">
+                                <div className="
+                                    pt-3
+                                    border-t
+                                    border-gray-100
+                                    space-y-2
+                                ">
 
-    {/* REGISTER */}
-    <Link
-        to="/register"
-        className="
-            px-3
-            sm:px-5
-            py-2
-            sm:py-2.5
-            rounded-full
-            text-blue-600
-            font-semibold
-            text-sm
-            sm:text-base
-            hover:bg-blue-50
-            transition
-            whitespace-nowrap
-        "
-    >
-        Register
-    </Link>
+                                    <Link
+                                        to="/register"
+                                        onClick={closeMobileMenu}
+                                        className="
+                                            block
+                                            w-full
+                                            text-center
+                                            px-4
+                                            py-3
+                                            rounded-xl
+                                            border
+                                            border-blue-600
+                                            text-blue-600
+                                            font-semibold
+                                        "
+                                    >
+                                        Register
+                                    </Link>
 
-    {/* LOGIN */}
-    <Link
-        to="/login"
-        className="
-            bg-gradient-to-r
-            from-blue-600
-            to-indigo-600
-            text-white
-            px-3
-            sm:px-5
-            py-2
-            sm:py-2.5
-            rounded-full
-            font-semibold
-            text-sm
-            sm:text-base
-            shadow-md
-            hover:shadow-lg
-            transition
-            whitespace-nowrap
-        "
-    >
-        Login
-    </Link>
 
-</div>
+                                    <Link
+                                        to="/login"
+                                        onClick={closeMobileMenu}
+                                        className="
+                                            block
+                                            w-full
+                                            text-center
+                                            px-4
+                                            py-3
+                                            rounded-xl
+                                            bg-gradient-to-r
+                                            from-blue-600
+                                            to-indigo-600
+                                            text-white
+                                            font-semibold
+                                            shadow-md
+                                        "
+                                    >
+                                        Login
+                                    </Link>
+
+                                </div>
 
                             )}
 
