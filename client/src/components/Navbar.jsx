@@ -7,9 +7,7 @@ import {
     Home as HomeIcon,
     CalendarDays,
     BriefcaseBusiness,
-    ShieldCheck,
-    Menu,
-    X
+    ShieldCheck
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getNotifications } from "../api/notificationApi";
@@ -26,7 +24,6 @@ function Navbar() {
 
     const [notificationCount, setNotificationCount] = useState(0);
     const [profileOpen, setProfileOpen] = useState(false);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     /* ================= NOTIFICATIONS ================= */
 
@@ -69,7 +66,6 @@ function Navbar() {
                 JSON.parse(localStorage.getItem("user"));
 
             setUser(updatedUser);
-
         };
 
         window.addEventListener("userUpdated", updateUser);
@@ -101,7 +97,6 @@ function Navbar() {
 
         setUser(null);
         setProfileOpen(false);
-        setMobileMenuOpen(false);
 
         navigate("/");
 
@@ -114,13 +109,6 @@ function Navbar() {
         user?.profileImage || null;
 
 
-    /* ================= CLOSE MOBILE MENU ================= */
-
-    const closeMobileMenu = () => {
-        setMobileMenuOpen(false);
-    };
-
-
     return (
 
         <nav className="
@@ -131,11 +119,11 @@ function Navbar() {
             shadow-md
         ">
 
-            {/* ================================================= */}
-            {/* MAIN NAVBAR */}
-            {/* ================================================= */}
-
             <div className="relative">
+
+                {/* ================================================= */}
+                {/* MAIN NAVBAR */}
+                {/* ================================================= */}
 
                 <div className="
                     max-w-7xl
@@ -151,11 +139,13 @@ function Navbar() {
                     justify-between
                 ">
 
-                    {/* ================= LOGO ================= */}
+
+                    {/* ================================================= */}
+                    {/* LOGO */}
+                    {/* ================================================= */}
 
                     <Link
                         to="/"
-                        onClick={closeMobileMenu}
                         className="
                             flex
                             items-center
@@ -168,7 +158,7 @@ function Navbar() {
                         "
                     >
 
-                        {/* LOGO */}
+                        {/* LOGO IMAGE */}
 
                         <div className="
                             w-12
@@ -204,7 +194,7 @@ function Navbar() {
                         <div className="leading-none">
 
                             <div className="
-                                text-[25px]
+                                text-[24px]
                                 sm:text-[32px]
                                 lg:text-[42px]
                                 font-black
@@ -259,6 +249,7 @@ function Navbar() {
                         ml-3
                     ">
 
+
                         {/* HOME */}
 
                         <Link
@@ -279,10 +270,7 @@ function Navbar() {
                             "
                         >
 
-                            <HomeIcon
-                                size={21}
-                                strokeWidth={2}
-                            />
+                            <HomeIcon size={21} />
 
                             <span className="font-medium">
                                 Home
@@ -419,64 +407,107 @@ function Navbar() {
                     ">
 
 
-                        {/* REGISTER - DESKTOP */}
+                        {/* ================================================= */}
+                        {/* HOME - MOBILE */}
+                        {/* ================================================= */}
+
+                        <Link
+                            to="/"
+                            className="
+                                md:hidden
+                                flex
+                                items-center
+                                gap-1
+                                px-2
+                                py-2
+                                rounded-full
+                                text-gray-800
+                                hover:text-blue-600
+                                hover:bg-blue-50
+                                transition
+                            "
+                        >
+
+                            <HomeIcon
+                                size={20}
+                                strokeWidth={2}
+                            />
+
+                            <span className="
+                                text-sm
+                                font-medium
+                            ">
+                                Home
+                            </span>
+
+                        </Link>
+
+
+                        {/* ================================================= */}
+                        {/* GUEST - LOGIN */}
+                        {/* ================================================= */}
 
                         {!user && (
 
-                            <Link
-                                to="/register"
-                                className="
-                                    hidden
-                                    sm:block
-                                    px-3
-                                    lg:px-5
-                                    py-2
-                                    lg:py-2.5
-                                    rounded-full
-                                    text-blue-600
-                                    font-semibold
-                                    hover:bg-blue-50
-                                    transition
-                                "
-                            >
-                                Register
-                            </Link>
+                            <>
+
+                                {/* REGISTER - DESKTOP ONLY */}
+
+                                <Link
+                                    to="/register"
+                                    className="
+                                        hidden
+                                        md:block
+                                        px-4
+                                        lg:px-5
+                                        py-2
+                                        lg:py-2.5
+                                        rounded-full
+                                        text-blue-600
+                                        font-semibold
+                                        hover:bg-blue-50
+                                        transition
+                                        whitespace-nowrap
+                                    "
+                                >
+                                    Register
+                                </Link>
+
+
+                                {/* LOGIN */}
+
+                                <Link
+                                    to="/login"
+                                    className="
+                                        bg-gradient-to-r
+                                        from-blue-600
+                                        to-indigo-600
+                                        text-white
+                                        px-4
+                                        sm:px-5
+                                        py-2
+                                        sm:py-2.5
+                                        rounded-full
+                                        font-semibold
+                                        shadow-md
+                                        hover:shadow-lg
+                                        transition
+                                        whitespace-nowrap
+                                        text-sm
+                                        sm:text-base
+                                    "
+                                >
+                                    Login
+                                </Link>
+
+                            </>
 
                         )}
 
 
-                        {/* LOGIN - DESKTOP */}
-
-                        {!user && (
-
-                            <Link
-                                to="/login"
-                                className="
-                                    hidden
-                                    sm:block
-                                    bg-gradient-to-r
-                                    from-blue-600
-                                    to-indigo-600
-                                    text-white
-                                    px-4
-                                    lg:px-5
-                                    py-2
-                                    lg:py-2.5
-                                    rounded-full
-                                    font-semibold
-                                    shadow-md
-                                    hover:shadow-lg
-                                    transition
-                                    whitespace-nowrap
-                                "
-                            >
-                                Login
-                            </Link>
-
-                        )}
-
-
+                        {/* ================================================= */}
                         {/* NOTIFICATION */}
+                        {/* ================================================= */}
 
                         {user && (
 
@@ -501,7 +532,7 @@ function Navbar() {
                             >
 
                                 <Bell
-                                    size={23}
+                                    size={22}
                                     strokeWidth={2}
                                 />
 
@@ -527,9 +558,7 @@ function Navbar() {
                                         border-2
                                         border-white
                                     ">
-
                                         {notificationCount}
-
                                     </span>
 
                                 )}
@@ -543,7 +572,7 @@ function Navbar() {
                         {/* PROFILE */}
                         {/* ================================================= */}
 
-                        {user ? (
+                        {user && (
 
                             <div className="relative">
 
@@ -560,6 +589,8 @@ function Navbar() {
                                         sm:gap-2
                                     "
                                 >
+
+                                    {/* PROFILE IMAGE */}
 
                                     <div className="
                                         w-10
@@ -614,6 +645,8 @@ function Navbar() {
                                     </div>
 
 
+                                    {/* ARROW - DESKTOP */}
+
                                     <ChevronDown
                                         size={17}
                                         className={`
@@ -632,11 +665,15 @@ function Navbar() {
                                 </button>
 
 
+                                {/* ================================================= */}
                                 {/* PROFILE DROPDOWN */}
+                                {/* ================================================= */}
 
                                 {profileOpen && (
 
                                     <>
+
+                                        {/* OUTSIDE CLICK */}
 
                                         <div
                                             className="
@@ -666,6 +703,7 @@ function Navbar() {
                                             overflow-hidden
                                             z-50
                                         ">
+
 
                                             {/* USER INFO */}
 
@@ -749,12 +787,13 @@ function Navbar() {
                                             </div>
 
 
-                                            {/* PROFILE */}
+                                            {/* MY PROFILE */}
 
                                             <button
                                                 onClick={() => {
 
                                                     setProfileOpen(false);
+
                                                     navigate("/profile");
 
                                                 }}
@@ -802,6 +841,8 @@ function Navbar() {
 
                                             </button>
 
+
+                                            {/* DIVIDER */}
 
                                             <div className="
                                                 h-px
@@ -867,42 +908,7 @@ function Navbar() {
 
                             </div>
 
-                        ) : null}
-
-
-                        {/* ================================================= */}
-                        {/* MOBILE MENU BUTTON */}
-                        {/* ================================================= */}
-
-                        <button
-                            onClick={() =>
-                                setMobileMenuOpen(
-                                    !mobileMenuOpen
-                                )
-                            }
-                            className="
-                                md:hidden
-                                w-10
-                                h-10
-                                flex
-                                items-center
-                                justify-center
-                                rounded-full
-                                text-gray-800
-                                hover:bg-blue-50
-                                hover:text-blue-600
-                                transition
-                            "
-                            aria-label="Open menu"
-                        >
-
-                            {mobileMenuOpen ? (
-                                <X size={25} />
-                            ) : (
-                                <Menu size={25} />
-                            )}
-
-                        </button>
+                        )}
 
                     </div>
 
@@ -910,270 +916,7 @@ function Navbar() {
 
 
                 {/* ================================================= */}
-                {/* MOBILE MENU */}
-                {/* ================================================= */}
-
-                {mobileMenuOpen && (
-
-                    <div className="
-                        md:hidden
-                        border-t
-                        border-gray-100
-                        bg-white
-                        shadow-lg
-                    ">
-
-                        <div className="
-                            px-4
-                            py-4
-                            space-y-2
-                        ">
-
-
-                            {/* HOME */}
-
-                            <Link
-                                to="/"
-                                onClick={closeMobileMenu}
-                                className="
-                                    flex
-                                    items-center
-                                    gap-3
-                                    px-4
-                                    py-3
-                                    rounded-xl
-                                    text-gray-800
-                                    hover:bg-blue-50
-                                    hover:text-blue-600
-                                "
-                            >
-
-                                <HomeIcon size={21} />
-
-                                <span className="font-medium">
-                                    Home
-                                </span>
-
-                            </Link>
-
-
-                            {/* CUSTOMER */}
-
-                            {user?.role === "customer" && (
-
-                                <Link
-                                    to="/my-bookings"
-                                    onClick={closeMobileMenu}
-                                    className="
-                                        flex
-                                        items-center
-                                        gap-3
-                                        px-4
-                                        py-3
-                                        rounded-xl
-                                        text-gray-800
-                                        hover:bg-blue-50
-                                        hover:text-blue-600
-                                    "
-                                >
-
-                                    <CalendarDays size={21} />
-
-                                    <span className="font-medium">
-                                        My Bookings
-                                    </span>
-
-                                </Link>
-
-                            )}
-
-
-                            {/* PROVIDER */}
-
-                            {user?.role === "provider" && (
-
-                                <Link
-                                    to="/provider-dashboard"
-                                    onClick={closeMobileMenu}
-                                    className="
-                                        flex
-                                        items-center
-                                        gap-3
-                                        px-4
-                                        py-3
-                                        rounded-xl
-                                        text-gray-800
-                                        hover:bg-blue-50
-                                        hover:text-blue-600
-                                    "
-                                >
-
-                                    <BriefcaseBusiness size={21} />
-
-                                    <span className="font-medium">
-                                        Dashboard
-                                    </span>
-
-                                </Link>
-
-                            )}
-
-
-                            {/* ADMIN */}
-
-                            {(user?.role === "admin" ||
-                                user?.role === "Admin") && (
-
-                                <Link
-                                    to="/admin-dashboard"
-                                    onClick={closeMobileMenu}
-                                    className="
-                                        flex
-                                        items-center
-                                        gap-3
-                                        px-4
-                                        py-3
-                                        rounded-xl
-                                        text-gray-800
-                                        hover:bg-blue-50
-                                        hover:text-blue-600
-                                    "
-                                >
-
-                                    <ShieldCheck size={21} />
-
-                                    <span className="font-medium">
-                                        Dashboard
-                                    </span>
-
-                                </Link>
-
-                            )}
-
-
-                            {/* NOTIFICATIONS */}
-
-                            {user && (
-
-                                <Link
-                                    to="/notifications"
-                                    onClick={closeMobileMenu}
-                                    className="
-                                        flex
-                                        items-center
-                                        justify-between
-                                        px-4
-                                        py-3
-                                        rounded-xl
-                                        text-gray-800
-                                        hover:bg-blue-50
-                                        hover:text-blue-600
-                                    "
-                                >
-
-                                    <div className="
-                                        flex
-                                        items-center
-                                        gap-3
-                                    ">
-
-                                        <Bell size={21} />
-
-                                        <span className="font-medium">
-                                            Notifications
-                                        </span>
-
-                                    </div>
-
-
-                                    {notificationCount > 0 && (
-
-                                        <span className="
-                                            min-w-6
-                                            h-6
-                                            px-2
-                                            rounded-full
-                                            bg-blue-600
-                                            text-white
-                                            text-xs
-                                            font-bold
-                                            flex
-                                            items-center
-                                            justify-center
-                                        ">
-                                            {notificationCount}
-                                        </span>
-
-                                    )}
-
-                                </Link>
-
-                            )}
-
-
-                            {/* GUEST BUTTONS */}
-
-                            {!user && (
-
-                                <div className="
-                                    pt-3
-                                    border-t
-                                    border-gray-100
-                                    space-y-2
-                                ">
-
-                                    <Link
-    to="/register"
-    className="
-        hidden
-        sm:block
-        px-5
-        py-2.5
-        rounded-full
-        text-blue-600
-        font-semibold
-        hover:bg-blue-50
-        transition
-    "
->
-    Register
-</Link>
-
-
-                                    <Link
-                                        to="/login"
-                                        onClick={closeMobileMenu}
-                                        className="
-                                            block
-                                            w-full
-                                            text-center
-                                            px-4
-                                            py-3
-                                            rounded-xl
-                                            bg-gradient-to-r
-                                            from-blue-600
-                                            to-indigo-600
-                                            text-white
-                                            font-semibold
-                                            shadow-md
-                                        "
-                                    >
-                                        Login
-                                    </Link>
-
-                                </div>
-
-                            )}
-
-                        </div>
-
-                    </div>
-
-                )}
-
-
-                {/* ================================================= */}
-                {/* BLUE / PURPLE CURVED BOTTOM STRIP */}
+                {/* CURVED BLUE / PURPLE STRIP */}
                 {/* ================================================= */}
 
                 <div className="
