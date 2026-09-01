@@ -323,6 +323,7 @@ function Navbar() {
                     lg:h-[92px]
                     flex
                     items-center
+                     
                 ">
 
 
@@ -486,7 +487,7 @@ function Navbar() {
     gap-1.5
     sm:gap-2
     lg:gap-3
-    ml-auto
+   
 ">
 
                         {/* ================================================= */}
