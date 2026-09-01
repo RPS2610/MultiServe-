@@ -429,7 +429,7 @@ function Navbar() {
         items-center
         gap-3
         lg:gap-4
-        ml-65
+        ml-170
     ">
 
 
