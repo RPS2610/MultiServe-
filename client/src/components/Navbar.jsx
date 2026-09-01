@@ -25,13 +25,19 @@ function Navbar() {
     const [notificationCount, setNotificationCount] = useState(0);
     const [profileOpen, setProfileOpen] = useState(false);
 
-    /* ================= NOTIFICATIONS ================= */
+
+    /* =========================================================
+       LOAD NOTIFICATIONS
+    ========================================================= */
 
     useEffect(() => {
 
         const loadNotifications = async () => {
 
-            if (!user?._id) return;
+            if (!user?._id) {
+                setNotificationCount(0);
+                return;
+            }
 
             try {
 
@@ -56,7 +62,9 @@ function Navbar() {
     }, [user]);
 
 
-    /* ================= UPDATE USER ================= */
+    /* =========================================================
+       UPDATE USER
+    ========================================================= */
 
     useEffect(() => {
 
@@ -68,8 +76,15 @@ function Navbar() {
             setUser(updatedUser);
         };
 
-        window.addEventListener("userUpdated", updateUser);
-        window.addEventListener("storage", updateUser);
+        window.addEventListener(
+            "userUpdated",
+            updateUser
+        );
+
+        window.addEventListener(
+            "storage",
+            updateUser
+        );
 
         return () => {
 
@@ -88,7 +103,9 @@ function Navbar() {
     }, []);
 
 
-    /* ================= LOGOUT ================= */
+    /* =========================================================
+       LOGOUT
+    ========================================================= */
 
     const logout = () => {
 
@@ -103,7 +120,9 @@ function Navbar() {
     };
 
 
-    /* ================= PROFILE IMAGE ================= */
+    /* =========================================================
+       PROFILE IMAGE
+    ========================================================= */
 
     const profileImage =
         user?.profileImage || null;
@@ -121,9 +140,10 @@ function Navbar() {
 
             <div className="relative">
 
-                {/* ================================================= */}
-                {/* MAIN NAVBAR */}
-                {/* ================================================= */}
+
+                {/* =====================================================
+                    MAIN NAVBAR
+                ===================================================== */}
 
                 <div className="
                     max-w-7xl
@@ -140,9 +160,9 @@ function Navbar() {
                 ">
 
 
-                    {/* ================================================= */}
-                    {/* LOGO */}
-                    {/* ================================================= */}
+                    {/* =================================================
+                        LOGO
+                    ================================================= */}
 
                     <Link
                         to="/"
@@ -220,6 +240,8 @@ function Navbar() {
                             </div>
 
 
+                            {/* TAGLINE */}
+
                             <p className="
                                 hidden
                                 lg:block
@@ -236,195 +258,43 @@ function Navbar() {
                     </Link>
 
 
-                    {/* ================================================= */}
-                    {/* DESKTOP NAVIGATION */}
-                    {/* ================================================= */}
-
-                    <div className="
-                        hidden
-                        md:flex
-                        items-center
-                        gap-1
-                        lg:gap-3
-                        ml-3
-                    ">
-
-
-                        {/* HOME */}
-
-                        <Link
-                            to="/"
-                            className="
-                                flex
-                                items-center
-                                gap-2
-                                px-3
-                                lg:px-4
-                                py-3
-                                rounded-full
-                                text-gray-800
-                                hover:text-blue-600
-                                hover:bg-blue-50
-                                transition
-                                whitespace-nowrap
-                            "
-                        >
-
-                            <HomeIcon size={21} />
-
-                            <span className="font-medium">
-                                Home
-                            </span>
-
-                        </Link>
-
-
-                        {/* CUSTOMER */}
-
-                        {user?.role === "customer" && (
-
-                            <Link
-                                to="/my-bookings"
-                                className="
-                                    flex
-                                    flex-col
-                                    items-center
-                                    justify-center
-                                    w-[70px]
-                                    py-1
-                                    rounded-xl
-                                    text-gray-800
-                                    hover:text-blue-600
-                                    hover:bg-blue-50
-                                    transition
-                                "
-                            >
-
-                                <CalendarDays size={21} />
-
-                                <span className="
-                                    text-[11px]
-                                    font-medium
-                                    leading-tight
-                                    text-center
-                                ">
-                                    My Bookings
-                                </span>
-
-                            </Link>
-
-                        )}
-
-
-                        {/* PROVIDER */}
-
-                        {user?.role === "provider" && (
-
-                            <Link
-                                to="/provider-dashboard"
-                                className="
-                                    flex
-                                    flex-col
-                                    items-center
-                                    justify-center
-                                    w-[70px]
-                                    py-1
-                                    rounded-xl
-                                    text-gray-800
-                                    hover:text-blue-600
-                                    hover:bg-blue-50
-                                    transition
-                                "
-                            >
-
-                                <BriefcaseBusiness size={21} />
-
-                                <span className="
-                                    text-[11px]
-                                    font-medium
-                                    leading-tight
-                                    text-center
-                                ">
-                                    Dashboard
-                                </span>
-
-                            </Link>
-
-                        )}
-
-
-                        {/* ADMIN */}
-
-                        {(user?.role === "admin" ||
-                            user?.role === "Admin") && (
-
-                            <Link
-                                to="/admin-dashboard"
-                                className="
-                                    flex
-                                    flex-col
-                                    items-center
-                                    justify-center
-                                    w-[70px]
-                                    py-1
-                                    rounded-xl
-                                    text-gray-800
-                                    hover:text-blue-600
-                                    hover:bg-blue-50
-                                    transition
-                                "
-                            >
-
-                                <ShieldCheck size={21} />
-
-                                <span className="
-                                    text-[11px]
-                                    font-medium
-                                    leading-tight
-                                    text-center
-                                ">
-                                    Dashboard
-                                </span>
-
-                            </Link>
-
-                        )}
-
-                    </div>
-
-
-                    {/* ================================================= */}
-                    {/* RIGHT SIDE */}
-                    {/* ================================================= */}
+                    {/* =================================================
+                        RIGHT SIDE
+                    ================================================= */}
 
                     <div className="
                         flex
                         items-center
                         gap-1
                         sm:gap-2
-                        lg:gap-4
+                        lg:gap-3
                         ml-2
                     ">
 
 
-                        {/* ================================================= */}
-                        {/* HOME - MOBILE */}
-                        {/* ================================================= */}
+                        {/* =================================================
+                            HOME — MOBILE
+                            
+                            Always visible on mobile.
+                            Before login AND after login.
+                        ================================================= */}
 
                         <Link
                             to="/"
                             className="
-                                md:hidden
                                 flex
+                                md:hidden
                                 items-center
                                 gap-1
                                 px-2
+                                sm:px-3
                                 py-2
                                 rounded-full
                                 text-gray-800
                                 hover:text-blue-600
                                 hover:bg-blue-50
                                 transition
+                                whitespace-nowrap
                             "
                         >
 
@@ -443,71 +313,262 @@ function Navbar() {
                         </Link>
 
 
-                        {/* ================================================= */}
-                        {/* GUEST - LOGIN */}
-                        {/* ================================================= */}
+                        {/* =================================================
+                            HOME — DESKTOP
+                            
+                            Only visible AFTER login.
+                        ================================================= */}
 
-                        {!user && (
+                        {user && (
 
-                            <>
+                            <Link
+                                to="/"
+                                className="
+                                    hidden
+                                    md:flex
+                                    items-center
+                                    gap-2
+                                    px-3
+                                    lg:px-4
+                                    py-3
+                                    rounded-full
+                                    text-gray-800
+                                    hover:text-blue-600
+                                    hover:bg-blue-50
+                                    transition
+                                    whitespace-nowrap
+                                "
+                            >
 
-                                {/* REGISTER - DESKTOP ONLY */}
+                                <HomeIcon
+                                    size={21}
+                                    strokeWidth={2}
+                                />
 
-                                <Link
-                                    to="/register"
-                                    className="
-                                        hidden
-                                        md:block
-                                        px-4
-                                        lg:px-5
-                                        py-2
-                                        lg:py-2.5
-                                        rounded-full
-                                        text-blue-600
-                                        font-semibold
-                                        hover:bg-blue-50
-                                        transition
-                                        whitespace-nowrap
-                                    "
-                                >
-                                    Register
-                                </Link>
+                                <span className="font-medium">
+                                    Home
+                                </span>
 
-
-                                {/* LOGIN */}
-
-                                <Link
-                                    to="/login"
-                                    className="
-                                        bg-gradient-to-r
-                                        from-blue-600
-                                        to-indigo-600
-                                        text-white
-                                        px-4
-                                        sm:px-5
-                                        py-2
-                                        sm:py-2.5
-                                        rounded-full
-                                        font-semibold
-                                        shadow-md
-                                        hover:shadow-lg
-                                        transition
-                                        whitespace-nowrap
-                                        text-sm
-                                        sm:text-base
-                                    "
-                                >
-                                    Login
-                                </Link>
-
-                            </>
+                            </Link>
 
                         )}
 
 
-                        {/* ================================================= */}
-                        {/* NOTIFICATION */}
-                        {/* ================================================= */}
+                        {/* =================================================
+                            CUSTOMER — MY BOOKINGS
+                            
+                            Mobile + Desktop after login.
+                        ================================================= */}
+
+                        {user?.role === "customer" && (
+
+                            <Link
+                                to="/my-bookings"
+                                className="
+                                    flex
+                                    flex-col
+                                    items-center
+                                    justify-center
+                                    min-w-[62px]
+                                    sm:min-w-[70px]
+                                    px-1
+                                    py-1
+                                    rounded-xl
+                                    text-gray-800
+                                    hover:text-blue-600
+                                    hover:bg-blue-50
+                                    transition
+                                "
+                            >
+
+                                <CalendarDays
+                                    size={20}
+                                    strokeWidth={2}
+                                />
+
+                                <span className="
+                                    text-[10px]
+                                    sm:text-[11px]
+                                    font-medium
+                                    leading-tight
+                                    text-center
+                                ">
+                                    My Bookings
+                                </span>
+
+                            </Link>
+
+                        )}
+
+
+                        {/* =================================================
+                            PROVIDER — DASHBOARD
+                            
+                            Mobile + Desktop after login.
+                        ================================================= */}
+
+                        {user?.role === "provider" && (
+
+                            <Link
+                                to="/provider-dashboard"
+                                className="
+                                    flex
+                                    flex-col
+                                    items-center
+                                    justify-center
+                                    min-w-[62px]
+                                    sm:min-w-[70px]
+                                    px-1
+                                    py-1
+                                    rounded-xl
+                                    text-gray-800
+                                    hover:text-blue-600
+                                    hover:bg-blue-50
+                                    transition
+                                "
+                            >
+
+                                <BriefcaseBusiness
+                                    size={20}
+                                    strokeWidth={2}
+                                />
+
+                                <span className="
+                                    text-[10px]
+                                    sm:text-[11px]
+                                    font-medium
+                                    leading-tight
+                                    text-center
+                                ">
+                                    Dashboard
+                                </span>
+
+                            </Link>
+
+                        )}
+
+
+                        {/* =================================================
+                            ADMIN — DASHBOARD
+                            
+                            Mobile + Desktop after login.
+                        ================================================= */}
+
+                        {(user?.role === "admin" ||
+                            user?.role === "Admin") && (
+
+                            <Link
+                                to="/admin-dashboard"
+                                className="
+                                    flex
+                                    flex-col
+                                    items-center
+                                    justify-center
+                                    min-w-[62px]
+                                    sm:min-w-[70px]
+                                    px-1
+                                    py-1
+                                    rounded-xl
+                                    text-gray-800
+                                    hover:text-blue-600
+                                    hover:bg-blue-50
+                                    transition
+                                "
+                            >
+
+                                <ShieldCheck
+                                    size={20}
+                                    strokeWidth={2}
+                                />
+
+                                <span className="
+                                    text-[10px]
+                                    sm:text-[11px]
+                                    font-medium
+                                    leading-tight
+                                    text-center
+                                ">
+                                    Dashboard
+                                </span>
+
+                            </Link>
+
+                        )}
+
+
+                        {/* =================================================
+                            REGISTER
+                            
+                            Desktop ONLY.
+                            Before login only.
+                        ================================================= */}
+
+                        {!user && (
+
+                            <Link
+                                to="/register"
+                                className="
+                                    hidden
+                                    md:block
+                                    px-4
+                                    lg:px-5
+                                    py-2
+                                    lg:py-2.5
+                                    rounded-full
+                                    text-blue-600
+                                    font-semibold
+                                    hover:bg-blue-50
+                                    transition
+                                    whitespace-nowrap
+                                "
+                            >
+                                Register
+                            </Link>
+
+                        )}
+
+
+                        {/* =================================================
+                            LOGIN
+                            
+                            Mobile + Desktop.
+                            Before login only.
+                        ================================================= */}
+
+                        {!user && (
+
+                            <Link
+                                to="/login"
+                                className="
+                                    bg-gradient-to-r
+                                    from-blue-600
+                                    to-indigo-600
+                                    text-white
+                                    px-4
+                                    sm:px-5
+                                    py-2
+                                    sm:py-2.5
+                                    rounded-full
+                                    font-semibold
+                                    shadow-md
+                                    hover:shadow-lg
+                                    transition
+                                    whitespace-nowrap
+                                    text-sm
+                                    sm:text-base
+                                "
+                            >
+                                Login
+                            </Link>
+
+                        )}
+
+
+                        {/* =================================================
+                            NOTIFICATIONS
+                            
+                            Mobile + Desktop after login.
+                        ================================================= */}
 
                         {user && (
 
@@ -536,6 +597,9 @@ function Navbar() {
                                     strokeWidth={2}
                                 />
 
+
+                                {/* NOTIFICATION COUNT */}
+
                                 {notificationCount > 0 && (
 
                                     <span className="
@@ -558,7 +622,9 @@ function Navbar() {
                                         border-2
                                         border-white
                                     ">
+
                                         {notificationCount}
+
                                     </span>
 
                                 )}
@@ -568,13 +634,18 @@ function Navbar() {
                         )}
 
 
-                        {/* ================================================= */}
-                        {/* PROFILE */}
-                        {/* ================================================= */}
+                        {/* =================================================
+                            PROFILE
+                            
+                            Mobile + Desktop after login.
+                        ================================================= */}
 
                         {user && (
 
                             <div className="relative">
+
+
+                                {/* PROFILE BUTTON */}
 
                                 <button
                                     onClick={() =>
@@ -635,7 +706,9 @@ function Navbar() {
 
                                                 <User
                                                     size={24}
-                                                    className="text-blue-600"
+                                                    className="
+                                                        text-blue-600
+                                                    "
                                                 />
 
                                             )}
@@ -645,7 +718,7 @@ function Navbar() {
                                     </div>
 
 
-                                    {/* ARROW - DESKTOP */}
+                                    {/* DOWN ARROW */}
 
                                     <ChevronDown
                                         size={17}
@@ -665,15 +738,16 @@ function Navbar() {
                                 </button>
 
 
-                                {/* ================================================= */}
-                                {/* PROFILE DROPDOWN */}
-                                {/* ================================================= */}
+                                {/* =================================================
+                                    PROFILE DROPDOWN
+                                ================================================= */}
 
                                 {profileOpen && (
 
                                     <>
 
-                                        {/* OUTSIDE CLICK */}
+
+                                        {/* CLICK OUTSIDE */}
 
                                         <div
                                             className="
@@ -686,6 +760,8 @@ function Navbar() {
                                             }
                                         />
 
+
+                                        {/* DROPDOWN */}
 
                                         <div className="
                                             absolute
@@ -754,7 +830,9 @@ function Navbar() {
 
                                                             <User
                                                                 size={22}
-                                                                className="text-blue-600"
+                                                                className="
+                                                                    text-blue-600
+                                                                "
                                                             />
 
                                                         )}
@@ -762,7 +840,9 @@ function Navbar() {
                                                     </div>
 
 
-                                                    <div className="min-w-0">
+                                                    <div className="
+                                                        min-w-0
+                                                    ">
 
                                                         <p className="
                                                             font-bold
@@ -827,7 +907,9 @@ function Navbar() {
 
                                                     <User
                                                         size={20}
-                                                        className="text-blue-600"
+                                                        className="
+                                                            text-blue-600
+                                                        "
                                                     />
 
                                                 </div>
@@ -886,7 +968,9 @@ function Navbar() {
 
                                                     <LogOut
                                                         size={20}
-                                                        className="text-red-600"
+                                                        className="
+                                                            text-red-600
+                                                        "
                                                     />
 
                                                 </div>
@@ -915,9 +999,9 @@ function Navbar() {
                 </div>
 
 
-                {/* ================================================= */}
-                {/* CURVED BLUE / PURPLE STRIP */}
-                {/* ================================================= */}
+                {/* =========================================================
+                    BLUE / PURPLE CURVED BOTTOM STRIP
+                ========================================================= */}
 
                 <div className="
                     absolute
@@ -956,7 +1040,6 @@ function Navbar() {
         </nav>
 
     );
-
 }
 
 export default Navbar;
