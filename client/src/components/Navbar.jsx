@@ -25,7 +25,10 @@ function Navbar() {
     const [notificationCount, setNotificationCount] = useState(0);
     const [profileOpen, setProfileOpen] = useState(false);
 
-    /* ================= NOTIFICATIONS ================= */
+
+    /* ================================================= */
+    /* NOTIFICATIONS */
+    /* ================================================= */
 
     useEffect(() => {
 
@@ -56,7 +59,9 @@ function Navbar() {
     }, [user]);
 
 
-    /* ================= UPDATE USER ================= */
+    /* ================================================= */
+    /* UPDATE USER */
+    /* ================================================= */
 
     useEffect(() => {
 
@@ -96,7 +101,9 @@ function Navbar() {
     }, []);
 
 
-    /* ================= LOGOUT ================= */
+    /* ================================================= */
+    /* LOGOUT */
+    /* ================================================= */
 
     const logout = () => {
 
@@ -111,13 +118,17 @@ function Navbar() {
     };
 
 
-    /* ================= PROFILE IMAGE ================= */
+    /* ================================================= */
+    /* PROFILE IMAGE */
+    /* ================================================= */
 
     const profileImage =
         user?.profileImage || null;
 
 
-    /* ================= DASHBOARD FUNCTION ================= */
+    /* ================================================= */
+    /* DASHBOARD PATH */
+    /* ================================================= */
 
     const getDashboardPath = () => {
 
@@ -137,8 +148,13 @@ function Navbar() {
         }
 
         return "/";
+
     };
 
+
+    /* ================================================= */
+    /* DASHBOARD ICON */
+    /* ================================================= */
 
     const getDashboardIcon = () => {
 
@@ -158,8 +174,13 @@ function Navbar() {
         }
 
         return null;
+
     };
 
+
+    /* ================================================= */
+    /* DASHBOARD TEXT */
+    /* ================================================= */
 
     const getDashboardText = () => {
 
@@ -168,6 +189,7 @@ function Navbar() {
         }
 
         return "Dashboard";
+
     };
 
 
@@ -223,8 +245,6 @@ function Navbar() {
                         "
                     >
 
-                        {/* LOGO IMAGE */}
-
                         <div
                             className="
                                 w-12
@@ -255,8 +275,6 @@ function Navbar() {
 
                         </div>
 
-
-                        {/* WEBSITE NAME */}
 
                         <div className="leading-none">
 
@@ -311,7 +329,6 @@ function Navbar() {
 
                     {/* ================================================= */}
                     {/* DESKTOP NAVIGATION */}
-                    {/* ONLY SHOWS ON md AND ABOVE */}
                     {/* ================================================= */}
 
                     <div
@@ -319,8 +336,8 @@ function Navbar() {
                             hidden
                             md:flex
                             items-center
-                            gap-1
-                            lg:gap-3
+                            gap-0
+                            lg:gap-1
                             ml-3
                         "
                     >
@@ -336,7 +353,7 @@ function Navbar() {
                                     items-center
                                     gap-2
                                     px-3
-                                    lg:px-4
+                                    lg:px-3
                                     py-3
                                     rounded-full
                                     text-gray-800
@@ -492,49 +509,41 @@ function Navbar() {
                             flex
                             items-center
                             gap-1
-                            sm:gap-2
-                            lg:gap-4
+                            sm:gap-1
+                            lg:gap-2
                             ml-2
                         "
                     >
 
                         {/* ================================================= */}
-                        {/* GUEST HOME - MOBILE ONLY */}
+                        {/* MOBILE HOME */}
+                        {/* Shows for both guest and logged-in user */}
                         {/* ================================================= */}
 
-                        {!user && (
+                        <Link
+                            to="/"
+                            className="
+                                md:hidden
+                                flex
+                                items-center
+                                justify-center
+                                w-10
+                                h-10
+                                rounded-full
+                                text-gray-800
+                                hover:bg-blue-50
+                                hover:text-blue-600
+                                transition
+                            "
+                        >
 
-                            <Link
-                                to="/"
-                                className="
-                                    md:hidden
-                                    flex
-                                    items-center
-                                    gap-1.5
-                                    px-3
-                                    py-2
-                                    rounded-full
-                                    text-gray-800
-                                    hover:text-blue-600
-                                    hover:bg-blue-50
-                                    transition
-                                    whitespace-nowrap
-                                "
-                            >
+                            <HomeIcon size={22} />
 
-                                <HomeIcon size={20} />
-
-                                <span className="font-medium">
-                                    Home
-                                </span>
-
-                            </Link>
-
-                        )}
+                        </Link>
 
 
                         {/* ================================================= */}
-                        {/* REGISTER - DESKTOP ONLY */}
+                        {/* DESKTOP REGISTER */}
                         {/* ================================================= */}
 
                         {!user && (
@@ -563,7 +572,7 @@ function Navbar() {
 
 
                         {/* ================================================= */}
-                        {/* LOGIN - GUEST */}
+                        {/* LOGIN */}
                         {/* ================================================= */}
 
                         {!user && (
@@ -676,7 +685,6 @@ function Navbar() {
                                         flex
                                         items-center
                                         gap-1
-                                        sm:gap-2
                                     "
                                 >
 
@@ -800,7 +808,9 @@ function Navbar() {
                                             "
                                         >
 
-                                            {/* ================= USER INFO ================= */}
+                                            {/* ================================================= */}
+                                            {/* USER INFO */}
+                                            {/* ================================================= */}
 
                                             <div
                                                 className="
@@ -925,6 +935,7 @@ function Navbar() {
                                                             flex
                                                             items-center
                                                             justify-center
+                                                            text-blue-600
                                                         "
                                                     >
 
@@ -942,6 +953,7 @@ function Navbar() {
                                                     </span>
 
                                                 </Link>
+
 
                                                 <div
                                                     className="
@@ -1015,7 +1027,9 @@ function Navbar() {
                                             </button>
 
 
+                                            {/* ================================================= */}
                                             {/* DIVIDER */}
+                                            {/* ================================================= */}
 
                                             <div
                                                 className="
