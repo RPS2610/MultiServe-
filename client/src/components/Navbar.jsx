@@ -429,7 +429,7 @@ function Navbar() {
         items-center
         gap-3
         lg:gap-4
-        ml-10
+        ml-65
     ">
 
 
@@ -485,7 +485,7 @@ function Navbar() {
     gap-3
     sm:gap-3
     lg:gap-4
-    ml-4
+    ml-2
 ">
                         {/* ================================================= */}
                         {/* MOBILE HOME */}
