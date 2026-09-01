@@ -424,16 +424,14 @@ function Navbar() {
                     {/* ================================================= */}
 
                     {user && (
-
-                        <div className="
-                            hidden
-                            md:flex
-                            items-center
-                            gap-2
-                            lg:gap-3
-                            ml-3
-                        ">
-
+<div className="
+    hidden
+    md:flex
+    items-center
+    gap-5
+    ml-10
+    mr-auto
+">
 
                             {/* HOME */}
 
@@ -482,12 +480,11 @@ function Navbar() {
                     {/* RIGHT SIDE */}
                     {/* ================================================= */}
 
-                    <div className="
+                   <div className="
     flex
     items-center
-    gap-4
-    lg:gap-6
-    ml-4
+    gap-5
+    ml-6
 ">
 
 
