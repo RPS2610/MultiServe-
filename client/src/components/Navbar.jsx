@@ -7,7 +7,9 @@ import {
     Home as HomeIcon,
     CalendarDays,
     BriefcaseBusiness,
-    ShieldCheck
+    ShieldCheck,
+    Menu,
+    X
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getNotifications } from "../api/notificationApi";
@@ -24,6 +26,7 @@ function Navbar() {
 
     const [notificationCount, setNotificationCount] = useState(0);
     const [profileOpen, setProfileOpen] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     /* ================= NOTIFICATIONS ================= */
 
@@ -69,15 +72,8 @@ function Navbar() {
 
         };
 
-        window.addEventListener(
-            "userUpdated",
-            updateUser
-        );
-
-        window.addEventListener(
-            "storage",
-            updateUser
-        );
+        window.addEventListener("userUpdated", updateUser);
+        window.addEventListener("storage", updateUser);
 
         return () => {
 
@@ -105,6 +101,7 @@ function Navbar() {
 
         setUser(null);
         setProfileOpen(false);
+        setMobileMenuOpen(false);
 
         navigate("/");
 
@@ -115,6 +112,13 @@ function Navbar() {
 
     const profileImage =
         user?.profileImage || null;
+
+
+    /* ================= CLOSE MOBILE MENU ================= */
+
+    const closeMobileMenu = () => {
+        setMobileMenuOpen(false);
+    };
 
 
     return (
@@ -136,119 +140,126 @@ function Navbar() {
                 <div className="
                     max-w-7xl
                     mx-auto
-                    px-5
-                    sm:px-6
+                    px-3
+                    sm:px-5
                     lg:px-8
-                    h-[92px]
+                    h-[70px]
+                    sm:h-[80px]
+                    lg:h-[92px]
                     flex
                     items-center
                     justify-between
                 ">
 
+                    {/* ================= LOGO ================= */}
 
-              {/* ================= LOGO ================= */}
+                    <Link
+                        to="/"
+                        onClick={closeMobileMenu}
+                        className="
+                            flex
+                            items-center
+                            gap-2
+                            sm:gap-3
+                            lg:gap-4
+                            min-w-0
+                            flex-shrink-0
+                            group
+                        "
+                    >
 
-<Link
-    to="/"
-    className="
-        flex
-        items-center
-        gap-4
-        min-w-0
-        flex-shrink-0
-        group
-    "
->
+                        {/* LOGO */}
 
-    {/* MultiServe Logo Image */}
+                        <div className="
+                            w-12
+                            h-12
+                            sm:w-16
+                            sm:h-16
+                            lg:w-[72px]
+                            lg:h-[72px]
+                            flex-shrink-0
+                            flex
+                            items-center
+                            justify-center
+                        ">
 
-    <div className="
-        w-[72px]
-        h-[72px]
-        sm:w-[82px]
-        sm:h-[82px]
-        flex-shrink-0
-        flex
-        items-center
-        justify-center
-    ">
+                            <img
+                                src={logo}
+                                alt="MultiServe Logo"
+                                className="
+                                    w-full
+                                    h-full
+                                    object-contain
+                                    transition-transform
+                                    duration-300
+                                    group-hover:scale-105
+                                "
+                            />
 
-        <img
-            src={logo}
-            alt="MultiServe Logo"
-            className="
-                w-full
-                h-full
-                object-contain
-                transition-transform
-                duration-300
-                group-hover:scale-105
-            "
-        />
-
-    </div>
+                        </div>
 
 
-    {/* Website Name */}
+                        {/* WEBSITE NAME */}
 
-    <div className="leading-none">
+                        <div className="leading-none">
 
-        <div className="
-            text-[36px]
-            sm:text-[42px]
-            font-black
-            tracking-tight
-            italic
-            whitespace-nowrap
-        ">
+                            <div className="
+                                text-[25px]
+                                sm:text-[32px]
+                                lg:text-[42px]
+                                font-black
+                                tracking-tight
+                                italic
+                                whitespace-nowrap
+                            ">
 
-            <span className="text-gray-900">
-                Multi
-            </span>
+                                <span className="text-gray-900">
+                                    Multi
+                                </span>
 
-            <span className="
-                text-transparent
-                bg-clip-text
-                bg-gradient-to-r
-                from-blue-600
-                to-indigo-600
-            ">
-                Serve
-            </span>
+                                <span className="
+                                    text-transparent
+                                    bg-clip-text
+                                    bg-gradient-to-r
+                                    from-blue-600
+                                    to-indigo-600
+                                ">
+                                    Serve
+                                </span>
 
-        </div>
+                            </div>
 
-        <p className="
-            hidden
-            sm:block
-            text-[11px]
-            tracking-[0.30em]
-            text-gray-500
-            mt-2
-        ">
-            ONE STOP. ALL SERVICES.
-        </p>
 
-    </div>
+                            <p className="
+                                hidden
+                                lg:block
+                                text-[11px]
+                                tracking-[0.30em]
+                                text-gray-500
+                                mt-2
+                            ">
+                                ONE STOP. ALL SERVICES.
+                            </p>
 
-</Link>
+                        </div>
+
+                    </Link>
 
 
                     {/* ================================================= */}
-                    {/* RIGHT SIDE */}
+                    {/* DESKTOP NAVIGATION */}
                     {/* ================================================= */}
 
                     <div className="
-                        flex
+                        hidden
+                        md:flex
                         items-center
-                        gap-2
-                        sm:gap-4
-                        lg:gap-6
-                        ml-4
+                        gap-1
+                        lg:gap-3
+                        ml-3
                     ">
 
-
-                        {/* ================= HOME ================= */}
+                        {/* HOME */}
 
                         <Link
                             to="/"
@@ -256,8 +267,8 @@ function Navbar() {
                                 flex
                                 items-center
                                 gap-2
-                                px-4
-                                sm:px-5
+                                px-3
+                                lg:px-4
                                 py-3
                                 rounded-full
                                 text-gray-800
@@ -273,114 +284,199 @@ function Navbar() {
                                 strokeWidth={2}
                             />
 
-                            <span className="
-                                hidden
-                                sm:block
-                                font-medium
-                            ">
+                            <span className="font-medium">
                                 Home
                             </span>
 
                         </Link>
 
 
-                      {/* CUSTOMER */}
-{user?.role === "customer" && (
-    <Link
-        to="/my-bookings"
-        className="
-            flex
-            flex-col
-            items-center
-            justify-center
-            w-[70px]
-            py-1
-            rounded-xl
-            text-gray-800
-            hover:text-blue-600
-            hover:bg-blue-50
-            transition
-        "
-    >
-        <CalendarDays size={21} />
+                        {/* CUSTOMER */}
 
-        <span className="text-[11px] font-medium leading-tight text-center">
-            My Bookings
-        </span>
-    </Link>
-)}
+                        {user?.role === "customer" && (
 
+                            <Link
+                                to="/my-bookings"
+                                className="
+                                    flex
+                                    flex-col
+                                    items-center
+                                    justify-center
+                                    w-[70px]
+                                    py-1
+                                    rounded-xl
+                                    text-gray-800
+                                    hover:text-blue-600
+                                    hover:bg-blue-50
+                                    transition
+                                "
+                            >
 
-{/* PROVIDER */}
-{user?.role === "provider" && (
-    <Link
-        to="/provider-dashboard"
-        className="
-            flex
-            flex-col
-            items-center
-            justify-center
-            w-[70px]
-            py-1
-            rounded-xl
-            text-gray-800
-            hover:text-blue-600
-            hover:bg-blue-50
-            transition
-        "
-    >
-        <BriefcaseBusiness size={21} />
+                                <CalendarDays size={21} />
 
-        <span className="text-[11px] font-medium leading-tight text-center">
-            Dashboard
-        </span>
-    </Link>
-)}
+                                <span className="
+                                    text-[11px]
+                                    font-medium
+                                    leading-tight
+                                    text-center
+                                ">
+                                    My Bookings
+                                </span>
 
-
-{/* ADMIN */}
-{(user?.role === "admin" || user?.role === "Admin") && (
-    <Link
-        to="/admin-dashboard"
-        className="
-            flex
-            flex-col
-            items-center
-            justify-center
-            w-[70px]
-            py-1
-            rounded-xl
-            text-gray-800
-            hover:text-blue-600
-            hover:bg-blue-50
-            transition
-        "
-    >
-        <ShieldCheck size={21} />
-
-        <span className="text-[11px] font-medium leading-tight text-center">
-            Dashboard
-        </span>
-    </Link>
-)}
-
-
-                        {/* ================= DIVIDER ================= */}
-
-                        {user && (
-
-                            <div className="
-                                hidden
-                                sm:block
-                                h-10
-                                w-px
-                                bg-gray-200
-                            " />
+                            </Link>
 
                         )}
 
 
-                        {/* ================= NOTIFICATION ================= */}
+                        {/* PROVIDER */}
+
+                        {user?.role === "provider" && (
+
+                            <Link
+                                to="/provider-dashboard"
+                                className="
+                                    flex
+                                    flex-col
+                                    items-center
+                                    justify-center
+                                    w-[70px]
+                                    py-1
+                                    rounded-xl
+                                    text-gray-800
+                                    hover:text-blue-600
+                                    hover:bg-blue-50
+                                    transition
+                                "
+                            >
+
+                                <BriefcaseBusiness size={21} />
+
+                                <span className="
+                                    text-[11px]
+                                    font-medium
+                                    leading-tight
+                                    text-center
+                                ">
+                                    Dashboard
+                                </span>
+
+                            </Link>
+
+                        )}
+
+
+                        {/* ADMIN */}
+
+                        {(user?.role === "admin" ||
+                            user?.role === "Admin") && (
+
+                            <Link
+                                to="/admin-dashboard"
+                                className="
+                                    flex
+                                    flex-col
+                                    items-center
+                                    justify-center
+                                    w-[70px]
+                                    py-1
+                                    rounded-xl
+                                    text-gray-800
+                                    hover:text-blue-600
+                                    hover:bg-blue-50
+                                    transition
+                                "
+                            >
+
+                                <ShieldCheck size={21} />
+
+                                <span className="
+                                    text-[11px]
+                                    font-medium
+                                    leading-tight
+                                    text-center
+                                ">
+                                    Dashboard
+                                </span>
+
+                            </Link>
+
+                        )}
+
+                    </div>
+
+
+                    {/* ================================================= */}
+                    {/* RIGHT SIDE */}
+                    {/* ================================================= */}
+
+                    <div className="
+                        flex
+                        items-center
+                        gap-1
+                        sm:gap-2
+                        lg:gap-4
+                        ml-2
+                    ">
+
+
+                        {/* REGISTER - DESKTOP */}
+
+                        {!user && (
+
+                            <Link
+                                to="/register"
+                                className="
+                                    hidden
+                                    sm:block
+                                    px-3
+                                    lg:px-5
+                                    py-2
+                                    lg:py-2.5
+                                    rounded-full
+                                    text-blue-600
+                                    font-semibold
+                                    hover:bg-blue-50
+                                    transition
+                                "
+                            >
+                                Register
+                            </Link>
+
+                        )}
+
+
+                        {/* LOGIN - DESKTOP */}
+
+                        {!user && (
+
+                            <Link
+                                to="/login"
+                                className="
+                                    hidden
+                                    sm:block
+                                    bg-gradient-to-r
+                                    from-blue-600
+                                    to-indigo-600
+                                    text-white
+                                    px-4
+                                    lg:px-5
+                                    py-2
+                                    lg:py-2.5
+                                    rounded-full
+                                    font-semibold
+                                    shadow-md
+                                    hover:shadow-lg
+                                    transition
+                                    whitespace-nowrap
+                                "
+                            >
+                                Login
+                            </Link>
+
+                        )}
+
+
+                        {/* NOTIFICATION */}
 
                         {user && (
 
@@ -388,8 +484,10 @@ function Navbar() {
                                 to="/notifications"
                                 className="
                                     relative
-                                    w-11
-                                    h-11
+                                    w-10
+                                    h-10
+                                    sm:w-11
+                                    sm:h-11
                                     flex
                                     items-center
                                     justify-center
@@ -403,7 +501,7 @@ function Navbar() {
                             >
 
                                 <Bell
-                                    size={25}
+                                    size={23}
                                     strokeWidth={2}
                                 />
 
@@ -411,8 +509,8 @@ function Navbar() {
 
                                     <span className="
                                         absolute
-                                        -top-1
-                                        -right-1
+                                        -top-0.5
+                                        -right-0.5
                                         min-w-5
                                         h-5
                                         px-1
@@ -458,20 +556,21 @@ function Navbar() {
                                     className="
                                         flex
                                         items-center
-                                        gap-2
-                                        group
+                                        gap-1
+                                        sm:gap-2
                                     "
                                 >
 
-                                    {/* PROFILE PHOTO */}
-
                                     <div className="
-                                        w-12
-                                        h-12
-                                        sm:w-14
-                                        sm:h-14
+                                        w-10
+                                        h-10
+                                        sm:w-12
+                                        sm:h-12
+                                        lg:w-14
+                                        lg:h-14
                                         rounded-full
-                                        p-[3px]
+                                        p-[2px]
+                                        sm:p-[3px]
                                         bg-gradient-to-r
                                         from-blue-600
                                         to-indigo-600
@@ -504,10 +603,8 @@ function Navbar() {
                                             ) : (
 
                                                 <User
-                                                    size={29}
-                                                    className="
-                                                        text-blue-600
-                                                    "
+                                                    size={24}
+                                                    className="text-blue-600"
                                                 />
 
                                             )}
@@ -517,10 +614,8 @@ function Navbar() {
                                     </div>
 
 
-                                    {/* DOWN ARROW */}
-
                                     <ChevronDown
-                                        size={18}
+                                        size={17}
                                         className={`
                                             hidden
                                             sm:block
@@ -537,15 +632,11 @@ function Navbar() {
                                 </button>
 
 
-                                {/* ================================================= */}
                                 {/* PROFILE DROPDOWN */}
-                                {/* ================================================= */}
 
                                 {profileOpen && (
 
                                     <>
-
-                                        {/* Click outside */}
 
                                         <div
                                             className="
@@ -554,9 +645,7 @@ function Navbar() {
                                                 z-40
                                             "
                                             onClick={() =>
-                                                setProfileOpen(
-                                                    false
-                                                )
+                                                setProfileOpen(false)
                                             }
                                         />
 
@@ -564,8 +653,11 @@ function Navbar() {
                                         <div className="
                                             absolute
                                             right-0
-                                            top-16
-                                            w-64
+                                            top-12
+                                            sm:top-14
+                                            lg:top-16
+                                            w-[calc(100vw-24px)]
+                                            max-w-64
                                             bg-white
                                             rounded-2xl
                                             shadow-2xl
@@ -575,12 +667,13 @@ function Navbar() {
                                             z-50
                                         ">
 
-
                                             {/* USER INFO */}
 
                                             <div className="
-                                                px-5
-                                                py-5
+                                                px-4
+                                                sm:px-5
+                                                py-4
+                                                sm:py-5
                                                 bg-gradient-to-r
                                                 from-blue-50
                                                 to-indigo-50
@@ -593,8 +686,10 @@ function Navbar() {
                                                 ">
 
                                                     <div className="
-                                                        w-11
-                                                        h-11
+                                                        w-10
+                                                        h-10
+                                                        sm:w-11
+                                                        sm:h-11
                                                         rounded-full
                                                         overflow-hidden
                                                         bg-white
@@ -620,10 +715,8 @@ function Navbar() {
                                                         ) : (
 
                                                             <User
-                                                                size={23}
-                                                                className="
-                                                                    text-blue-600
-                                                                "
+                                                                size={22}
+                                                                className="text-blue-600"
                                                             />
 
                                                         )}
@@ -631,9 +724,7 @@ function Navbar() {
                                                     </div>
 
 
-                                                    <div className="
-                                                        min-w-0
-                                                    ">
+                                                    <div className="min-w-0">
 
                                                         <p className="
                                                             font-bold
@@ -658,23 +749,25 @@ function Navbar() {
                                             </div>
 
 
-                                            {/* ================= MY PROFILE ================= */}
+                                            {/* PROFILE */}
 
                                             <button
                                                 onClick={() => {
 
                                                     setProfileOpen(false);
-
                                                     navigate("/profile");
 
                                                 }}
                                                 className="
                                                     w-full
-                                                    px-5
-                                                    py-4
+                                                    px-4
+                                                    sm:px-5
+                                                    py-3
+                                                    sm:py-4
                                                     flex
                                                     items-center
-                                                    gap-4
+                                                    gap-3
+                                                    sm:gap-4
                                                     text-left
                                                     hover:bg-blue-50
                                                     transition
@@ -682,8 +775,10 @@ function Navbar() {
                                             >
 
                                                 <div className="
-                                                    w-10
-                                                    h-10
+                                                    w-9
+                                                    h-9
+                                                    sm:w-10
+                                                    sm:h-10
                                                     rounded-full
                                                     bg-blue-100
                                                     flex
@@ -692,10 +787,8 @@ function Navbar() {
                                                 ">
 
                                                     <User
-                                                        size={21}
-                                                        className="
-                                                            text-blue-600
-                                                        "
+                                                        size={20}
+                                                        className="text-blue-600"
                                                     />
 
                                                 </div>
@@ -710,26 +803,28 @@ function Navbar() {
                                             </button>
 
 
-                                            {/* DIVIDER */}
-
                                             <div className="
                                                 h-px
                                                 bg-gray-100
-                                                mx-5
+                                                mx-4
+                                                sm:mx-5
                                             " />
 
 
-                                            {/* ================= LOGOUT ================= */}
+                                            {/* LOGOUT */}
 
                                             <button
                                                 onClick={logout}
                                                 className="
                                                     w-full
-                                                    px-5
-                                                    py-4
+                                                    px-4
+                                                    sm:px-5
+                                                    py-3
+                                                    sm:py-4
                                                     flex
                                                     items-center
-                                                    gap-4
+                                                    gap-3
+                                                    sm:gap-4
                                                     text-left
                                                     hover:bg-red-50
                                                     transition
@@ -737,8 +832,10 @@ function Navbar() {
                                             >
 
                                                 <div className="
-                                                    w-10
-                                                    h-10
+                                                    w-9
+                                                    h-9
+                                                    sm:w-10
+                                                    sm:h-10
                                                     rounded-full
                                                     bg-red-100
                                                     flex
@@ -747,10 +844,8 @@ function Navbar() {
                                                 ">
 
                                                     <LogOut
-                                                        size={21}
-                                                        className="
-                                                            text-red-600
-                                                        "
+                                                        size={20}
+                                                        className="text-red-600"
                                                     />
 
                                                 </div>
@@ -772,62 +867,316 @@ function Navbar() {
 
                             </div>
 
-                        ) : (
+                        ) : null}
 
-                            /* ================================================= */
-                            /* GUEST */
-                            /* ================================================= */
 
-                            <div className="
+                        {/* ================================================= */}
+                        {/* MOBILE MENU BUTTON */}
+                        {/* ================================================= */}
+
+                        <button
+                            onClick={() =>
+                                setMobileMenuOpen(
+                                    !mobileMenuOpen
+                                )
+                            }
+                            className="
+                                md:hidden
+                                w-10
+                                h-10
                                 flex
                                 items-center
-                                gap-2
-                            ">
+                                justify-center
+                                rounded-full
+                                text-gray-800
+                                hover:bg-blue-50
+                                hover:text-blue-600
+                                transition
+                            "
+                            aria-label="Open menu"
+                        >
 
-                                <Link
-                                    to="/register"
-                                    className="
-                                        hidden
-                                        sm:block
-                                        px-5
-                                        py-2.5
-                                        rounded-full
-                                        text-blue-600
-                                        font-semibold
-                                        hover:bg-blue-50
-                                        transition
-                                    "
-                                >
-                                    Register
-                                </Link>
+                            {mobileMenuOpen ? (
+                                <X size={25} />
+                            ) : (
+                                <Menu size={25} />
+                            )}
 
-                                <Link
-                                    to="/login"
-                                    className="
-                                        bg-gradient-to-r
-                                        from-blue-600
-                                        to-indigo-600
-                                        text-white
-                                        px-5
-                                        py-2.5
-                                        rounded-full
-                                        font-semibold
-                                        shadow-md
-                                        hover:shadow-lg
-                                        transition
-                                        whitespace-nowrap
-                                    "
-                                >
-                                    Login
-                                </Link>
-
-                            </div>
-
-                        )}
+                        </button>
 
                     </div>
 
                 </div>
+
+
+                {/* ================================================= */}
+                {/* MOBILE MENU */}
+                {/* ================================================= */}
+
+                {mobileMenuOpen && (
+
+                    <div className="
+                        md:hidden
+                        border-t
+                        border-gray-100
+                        bg-white
+                        shadow-lg
+                    ">
+
+                        <div className="
+                            px-4
+                            py-4
+                            space-y-2
+                        ">
+
+
+                            {/* HOME */}
+
+                            <Link
+                                to="/"
+                                onClick={closeMobileMenu}
+                                className="
+                                    flex
+                                    items-center
+                                    gap-3
+                                    px-4
+                                    py-3
+                                    rounded-xl
+                                    text-gray-800
+                                    hover:bg-blue-50
+                                    hover:text-blue-600
+                                "
+                            >
+
+                                <HomeIcon size={21} />
+
+                                <span className="font-medium">
+                                    Home
+                                </span>
+
+                            </Link>
+
+
+                            {/* CUSTOMER */}
+
+                            {user?.role === "customer" && (
+
+                                <Link
+                                    to="/my-bookings"
+                                    onClick={closeMobileMenu}
+                                    className="
+                                        flex
+                                        items-center
+                                        gap-3
+                                        px-4
+                                        py-3
+                                        rounded-xl
+                                        text-gray-800
+                                        hover:bg-blue-50
+                                        hover:text-blue-600
+                                    "
+                                >
+
+                                    <CalendarDays size={21} />
+
+                                    <span className="font-medium">
+                                        My Bookings
+                                    </span>
+
+                                </Link>
+
+                            )}
+
+
+                            {/* PROVIDER */}
+
+                            {user?.role === "provider" && (
+
+                                <Link
+                                    to="/provider-dashboard"
+                                    onClick={closeMobileMenu}
+                                    className="
+                                        flex
+                                        items-center
+                                        gap-3
+                                        px-4
+                                        py-3
+                                        rounded-xl
+                                        text-gray-800
+                                        hover:bg-blue-50
+                                        hover:text-blue-600
+                                    "
+                                >
+
+                                    <BriefcaseBusiness size={21} />
+
+                                    <span className="font-medium">
+                                        Dashboard
+                                    </span>
+
+                                </Link>
+
+                            )}
+
+
+                            {/* ADMIN */}
+
+                            {(user?.role === "admin" ||
+                                user?.role === "Admin") && (
+
+                                <Link
+                                    to="/admin-dashboard"
+                                    onClick={closeMobileMenu}
+                                    className="
+                                        flex
+                                        items-center
+                                        gap-3
+                                        px-4
+                                        py-3
+                                        rounded-xl
+                                        text-gray-800
+                                        hover:bg-blue-50
+                                        hover:text-blue-600
+                                    "
+                                >
+
+                                    <ShieldCheck size={21} />
+
+                                    <span className="font-medium">
+                                        Dashboard
+                                    </span>
+
+                                </Link>
+
+                            )}
+
+
+                            {/* NOTIFICATIONS */}
+
+                            {user && (
+
+                                <Link
+                                    to="/notifications"
+                                    onClick={closeMobileMenu}
+                                    className="
+                                        flex
+                                        items-center
+                                        justify-between
+                                        px-4
+                                        py-3
+                                        rounded-xl
+                                        text-gray-800
+                                        hover:bg-blue-50
+                                        hover:text-blue-600
+                                    "
+                                >
+
+                                    <div className="
+                                        flex
+                                        items-center
+                                        gap-3
+                                    ">
+
+                                        <Bell size={21} />
+
+                                        <span className="font-medium">
+                                            Notifications
+                                        </span>
+
+                                    </div>
+
+
+                                    {notificationCount > 0 && (
+
+                                        <span className="
+                                            min-w-6
+                                            h-6
+                                            px-2
+                                            rounded-full
+                                            bg-blue-600
+                                            text-white
+                                            text-xs
+                                            font-bold
+                                            flex
+                                            items-center
+                                            justify-center
+                                        ">
+                                            {notificationCount}
+                                        </span>
+
+                                    )}
+
+                                </Link>
+
+                            )}
+
+
+                            {/* GUEST BUTTONS */}
+
+                            {!user && (
+
+                               <div className="
+    flex
+    items-center
+    gap-2
+    sm:gap-3
+">
+
+    {/* REGISTER */}
+    <Link
+        to="/register"
+        className="
+            px-3
+            sm:px-5
+            py-2
+            sm:py-2.5
+            rounded-full
+            text-blue-600
+            font-semibold
+            text-sm
+            sm:text-base
+            hover:bg-blue-50
+            transition
+            whitespace-nowrap
+        "
+    >
+        Register
+    </Link>
+
+    {/* LOGIN */}
+    <Link
+        to="/login"
+        className="
+            bg-gradient-to-r
+            from-blue-600
+            to-indigo-600
+            text-white
+            px-3
+            sm:px-5
+            py-2
+            sm:py-2.5
+            rounded-full
+            font-semibold
+            text-sm
+            sm:text-base
+            shadow-md
+            hover:shadow-lg
+            transition
+            whitespace-nowrap
+        "
+    >
+        Login
+    </Link>
+
+</div>
+
+                            )}
+
+                        </div>
+
+                    </div>
+
+                )}
 
 
                 {/* ================================================= */}
@@ -839,7 +1188,8 @@ function Navbar() {
                     bottom-0
                     left-0
                     right-0
-                    h-[7px]
+                    h-[5px]
+                    sm:h-[7px]
                     overflow-hidden
                     pointer-events-none
                 ">
