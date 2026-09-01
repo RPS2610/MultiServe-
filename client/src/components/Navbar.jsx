@@ -485,9 +485,9 @@ function Navbar() {
                     <div className="
                         flex
                         items-center
-                        gap-1.5
-                        sm:gap-2
-                        lg:gap-3
+                        gap-7
+                        sm:gap-7
+                        lg:gap-7
                         ml-auto
                     ">
 
