@@ -323,7 +323,6 @@ function Navbar() {
     lg:h-[92px]
     flex
     items-center
-    justify-between
 ">
 
 
@@ -430,9 +429,9 @@ function Navbar() {
         items-center
         gap-3
         lg:gap-4
-        ml-12
-        mr-auto
+        ml-10
     ">
+
 
                             {/* HOME */}
 
@@ -480,16 +479,14 @@ function Navbar() {
                     {/* ================================================= */}
                     {/* RIGHT SIDE */}
                     {/* ================================================= */}
-
-                    <div className="
+<div className="
     flex
     items-center
-    gap-1.5
-    sm:gap-2
-    lg:gap-3
-   
+    gap-3
+    sm:gap-3
+    lg:gap-4
+    ml-3
 ">
-
                         {/* ================================================= */}
                         {/* MOBILE HOME */}
                         {/* ================================================= */}
