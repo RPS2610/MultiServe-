@@ -313,18 +313,18 @@ function Navbar() {
                 {/* ================================================= */}
 
                 <div className="
-                    max-w-7xl
-                    mx-auto
-                    px-3
-                    sm:px-5
-                    lg:px-8
-                    h-[70px]
-                    sm:h-[80px]
-                    lg:h-[92px]
-                    flex
-                    items-center
-                     
-                ">
+    max-w-7xl
+    mx-auto
+    px-3
+    sm:px-5
+    lg:px-8
+    h-[70px]
+    sm:h-[80px]
+    lg:h-[92px]
+    flex
+    items-center
+    justify-between
+">
 
 
                     {/* ================================================= */}
@@ -423,16 +423,16 @@ function Navbar() {
                     {/* DESKTOP NAVIGATION */}
                     {/* ================================================= */}
 
-                    {user && (
+                  {user && (
     <div className="
         hidden
         md:flex
         items-center
-        gap-2
-        lg:gap-3
-        ml-3
+        gap-3
+        lg:gap-4
+        ml-12
+        mr-auto
     ">
-
 
                             {/* HOME */}
 
