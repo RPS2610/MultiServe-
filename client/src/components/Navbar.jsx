@@ -422,7 +422,7 @@ function Navbar() {
                     {/* DESKTOP NAVIGATION */}
                     {/* ================================================= */}
 
-                  {user && (
+                {user && (
     <div className="
         hidden
         md:flex
@@ -485,7 +485,7 @@ function Navbar() {
     gap-3
     sm:gap-3
     lg:gap-4
-    ml-3
+    ml-4
 ">
                         {/* ================================================= */}
                         {/* MOBILE HOME */}
