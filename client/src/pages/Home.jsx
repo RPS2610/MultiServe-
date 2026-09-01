@@ -11,26 +11,72 @@ import { getAllServices } from "../api/serviceApi";
 function Home() {
 
     const [services, setServices] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+
+        let isMounted = true;
+
+        const fetchServices = async (attempt = 1) => {
+
+            try {
+
+                const data = await getAllServices();
+
+                if (!isMounted) return;
+
+                if (Array.isArray(data)) {
+
+                    setServices(data);
+
+                } else {
+
+                    console.log("Unexpected services response:", data);
+
+                }
+
+                setLoading(false);
+
+            } catch (error) {
+
+                console.error(
+                    `Failed to load services. Attempt ${attempt}:`,
+                    error
+                );
+
+                /*
+                 * Render can sometimes take a few seconds
+                 * to wake up. Retry automatically.
+                 */
+
+                if (attempt < 3 && isMounted) {
+
+                    setTimeout(() => {
+
+                        fetchServices(attempt + 1);
+
+                    }, 2000);
+
+                } else if (isMounted) {
+
+                    setLoading(false);
+
+                }
+
+            }
+
+        };
+
         fetchServices();
+
+        return () => {
+
+            isMounted = false;
+
+        };
+
     }, []);
 
-    const fetchServices = async () => {
-
-        try {
-
-            const data = await getAllServices();
-
-            setServices(data);
-
-        } catch (error) {
-
-            console.log(error);
-
-        }
-
-    };
 
     const handleExploreServices = () => {
 
@@ -48,6 +94,7 @@ function Home() {
 
     };
 
+
     return (
 
         <>
@@ -58,26 +105,53 @@ function Home() {
 
             <SearchBar />
 
+
+            {/* ================================================= */}
+            {/* POPULAR SERVICES */}
+            {/* ================================================= */}
+
             <section
                 id="services"
-                className="max-w-7xl mx-auto px-6 py-20 scroll-mt-24"
+                className="
+                    max-w-7xl
+                    mx-auto
+                    px-6
+                    py-20
+                    scroll-mt-24
+                "
             >
 
                 <div className="text-center mb-14">
 
-                    <p className="text-blue-600 font-semibold uppercase tracking-wider">
+                    <p className="
+                        text-blue-600
+                        font-semibold
+                        uppercase
+                        tracking-wider
+                    ">
 
                         What We Offer
 
                     </p>
 
-                    <h2 className="text-5xl font-bold mt-3">
+
+                    <h2 className="
+                        text-5xl
+                        font-bold
+                        mt-3
+                    ">
 
                         Popular Services
 
                     </h2>
 
-                    <p className="text-gray-500 mt-5 max-w-2xl mx-auto">
+
+                    <p className="
+                        text-gray-500
+                        mt-5
+                        max-w-2xl
+                        mx-auto
+                    ">
 
                         Book trusted professionals for home repair,
                         maintenance, cleaning, appliance servicing,
@@ -88,35 +162,94 @@ function Home() {
                 </div>
 
 
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-8">
+                {/* SERVICES */}
 
-                    {services.map((service) => (
+                {loading && services.length === 0 ? (
 
-                        <ServiceCard
-                            key={service._id}
-                            service={service}
-                        />
+                    <div className="
+                        text-center
+                        py-16
+                        text-gray-500
+                    ">
 
-                    ))}
+                        Loading services...
 
-                </div>
+                    </div>
+
+                ) : services.length > 0 ? (
+
+                    <div className="
+                        grid
+                        grid-cols-2
+                        md:grid-cols-3
+                        lg:grid-cols-4
+                        xl:grid-cols-4
+                        gap-8
+                    ">
+
+                        {services.map((service) => (
+
+                            <ServiceCard
+                                key={service._id}
+                                service={service}
+                            />
+
+                        ))}
+
+                    </div>
+
+                ) : (
+
+                    <div className="
+                        text-center
+                        py-16
+                        text-gray-500
+                    ">
+
+                        Services are temporarily unavailable.
+                        Please refresh the page.
+
+                    </div>
+
+                )}
 
             </section>
 
 
-            <section className="bg-gray-50 py-24">
+            {/* ================================================= */}
+            {/* WHY CHOOSE MULTISERVE */}
+            {/* ================================================= */}
 
-                <div className="max-w-7xl mx-auto px-6">
+            <section className="
+                bg-gray-50
+                py-24
+            ">
 
-                    <div className="text-center mb-16">
+                <div className="
+                    max-w-7xl
+                    mx-auto
+                    px-6
+                ">
 
-                        <h2 className="text-5xl font-bold">
+                    <div className="
+                        text-center
+                        mb-16
+                    ">
+
+                        <h2 className="
+                            text-5xl
+                            font-bold
+                        ">
 
                             Why Choose MultiServe?
 
                         </h2>
 
-                        <p className="text-gray-500 mt-5">
+
+                        <p className="
+                            text-gray-500
+                            mt-5
+                        ">
 
                             Reliable professionals, transparent pricing,
                             and hassle-free bookings.
@@ -126,23 +259,46 @@ function Home() {
                     </div>
 
 
-                    <div className="grid md:grid-cols-3 gap-8">
+                    <div className="
+                        grid
+                        md:grid-cols-3
+                        gap-8
+                    ">
 
-                        <div className="bg-white rounded-3xl shadow-lg p-8 hover:shadow-2xl transition">
 
-                            <div className="text-5xl mb-5">
+                        <div className="
+                            bg-white
+                            rounded-3xl
+                            shadow-lg
+                            p-8
+                            hover:shadow-2xl
+                            transition
+                        ">
+
+                            <div className="
+                                text-5xl
+                                mb-5
+                            ">
 
                                 🛡️
 
                             </div>
 
-                            <h3 className="text-2xl font-bold">
+
+                            <h3 className="
+                                text-2xl
+                                font-bold
+                            ">
 
                                 Verified Experts
 
                             </h3>
 
-                            <p className="text-gray-600 mt-4">
+
+                            <p className="
+                                text-gray-600
+                                mt-4
+                            ">
 
                                 Every service provider is verified
                                 before joining our platform.
@@ -152,21 +308,39 @@ function Home() {
                         </div>
 
 
-                        <div className="bg-white rounded-3xl shadow-lg p-8 hover:shadow-2xl transition">
+                        <div className="
+                            bg-white
+                            rounded-3xl
+                            shadow-lg
+                            p-8
+                            hover:shadow-2xl
+                            transition
+                        ">
 
-                            <div className="text-5xl mb-5">
+                            <div className="
+                                text-5xl
+                                mb-5
+                            ">
 
                                 ⚡
 
                             </div>
 
-                            <h3 className="text-2xl font-bold">
+
+                            <h3 className="
+                                text-2xl
+                                font-bold
+                            ">
 
                                 Quick Booking
 
                             </h3>
 
-                            <p className="text-gray-600 mt-4">
+
+                            <p className="
+                                text-gray-600
+                                mt-4
+                            ">
 
                                 Book trusted professionals in
                                 just a few clicks.
@@ -176,21 +350,39 @@ function Home() {
                         </div>
 
 
-                        <div className="bg-white rounded-3xl shadow-lg p-8 hover:shadow-2xl transition">
+                        <div className="
+                            bg-white
+                            rounded-3xl
+                            shadow-lg
+                            p-8
+                            hover:shadow-2xl
+                            transition
+                        ">
 
-                            <div className="text-5xl mb-5">
+                            <div className="
+                                text-5xl
+                                mb-5
+                            ">
 
                                 ⭐
 
                             </div>
 
-                            <h3 className="text-2xl font-bold">
+
+                            <h3 className="
+                                text-2xl
+                                font-bold
+                            ">
 
                                 Top Rated Services
 
                             </h3>
 
-                            <p className="text-gray-600 mt-4">
+
+                            <p className="
+                                text-gray-600
+                                mt-4
+                            ">
 
                                 Highly rated professionals with
                                 excellent customer reviews.
@@ -206,14 +398,29 @@ function Home() {
             </section>
 
 
-         <section
-    id="services"
-    className="max-w-7xl mx-auto px-6 py-20"
->
+            {/* ================================================= */}
+            {/* HOW IT WORKS */}
+            {/* ================================================= */}
 
-                <div className="text-center mb-16">
+            <section
+                id="how-it-works"
+                className="
+                    max-w-7xl
+                    mx-auto
+                    px-6
+                    py-20
+                "
+            >
 
-                    <h2 className="text-5xl font-bold">
+                <div className="
+                    text-center
+                    mb-16
+                ">
+
+                    <h2 className="
+                        text-5xl
+                        font-bold
+                    ">
 
                         How It Works
 
@@ -222,23 +429,47 @@ function Home() {
                 </div>
 
 
-                <div className="grid md:grid-cols-3 gap-10">
+                <div className="
+                    grid
+                    md:grid-cols-3
+                    gap-10
+                ">
+
 
                     <div className="text-center">
 
-                        <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center text-5xl mx-auto">
+                        <div className="
+                            w-24
+                            h-24
+                            rounded-full
+                            bg-blue-100
+                            flex
+                            items-center
+                            justify-center
+                            text-5xl
+                            mx-auto
+                        ">
 
                             🔍
 
                         </div>
 
-                        <h3 className="text-2xl font-bold mt-6">
+
+                        <h3 className="
+                            text-2xl
+                            font-bold
+                            mt-6
+                        ">
 
                             Search
 
                         </h3>
 
-                        <p className="text-gray-500 mt-3">
+
+                        <p className="
+                            text-gray-500
+                            mt-3
+                        ">
 
                             Choose the service you need.
 
@@ -249,19 +480,38 @@ function Home() {
 
                     <div className="text-center">
 
-                        <div className="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center text-5xl mx-auto">
+                        <div className="
+                            w-24
+                            h-24
+                            rounded-full
+                            bg-green-100
+                            flex
+                            items-center
+                            justify-center
+                            text-5xl
+                            mx-auto
+                        ">
 
                             📅
 
                         </div>
 
-                        <h3 className="text-2xl font-bold mt-6">
+
+                        <h3 className="
+                            text-2xl
+                            font-bold
+                            mt-6
+                        ">
 
                             Book
 
                         </h3>
 
-                        <p className="text-gray-500 mt-3">
+
+                        <p className="
+                            text-gray-500
+                            mt-3
+                        ">
 
                             Fill your details and confirm
                             the booking instantly.
@@ -273,19 +523,38 @@ function Home() {
 
                     <div className="text-center">
 
-                        <div className="w-24 h-24 rounded-full bg-yellow-100 flex items-center justify-center text-5xl mx-auto">
+                        <div className="
+                            w-24
+                            h-24
+                            rounded-full
+                            bg-yellow-100
+                            flex
+                            items-center
+                            justify-center
+                            text-5xl
+                            mx-auto
+                        ">
 
                             🏡
 
                         </div>
 
-                        <h3 className="text-2xl font-bold mt-6">
+
+                        <h3 className="
+                            text-2xl
+                            font-bold
+                            mt-6
+                        ">
 
                             Relax
 
                         </h3>
 
-                        <p className="text-gray-500 mt-3">
+
+                        <p className="
+                            text-gray-500
+                            mt-3
+                        ">
 
                             Our professional reaches your
                             doorstep on time.
@@ -299,15 +568,37 @@ function Home() {
             </section>
 
 
-            <section className="bg-blue-600 text-white py-20">
+            {/* ================================================= */}
+            {/* STATS */}
+            {/* ================================================= */}
 
-                <div className="max-w-7xl mx-auto px-6">
+            <section className="
+                bg-blue-600
+                text-white
+                py-20
+            ">
 
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 text-center">
+                <div className="
+                    max-w-7xl
+                    mx-auto
+                    px-6
+                ">
+
+                    <div className="
+                        grid
+                        grid-cols-2
+                        lg:grid-cols-4
+                        gap-10
+                        text-center
+                    ">
+
 
                         <div>
 
-                            <h2 className="text-5xl font-bold">
+                            <h2 className="
+                                text-5xl
+                                font-bold
+                            ">
 
                                 500+
 
@@ -324,7 +615,10 @@ function Home() {
 
                         <div>
 
-                            <h2 className="text-5xl font-bold">
+                            <h2 className="
+                                text-5xl
+                                font-bold
+                            ">
 
                                 10K+
 
@@ -341,7 +635,10 @@ function Home() {
 
                         <div>
 
-                            <h2 className="text-5xl font-bold">
+                            <h2 className="
+                                text-5xl
+                                font-bold
+                            ">
 
                                 35+
 
@@ -358,7 +655,10 @@ function Home() {
 
                         <div>
 
-                            <h2 className="text-5xl font-bold">
+                            <h2 className="
+                                text-5xl
+                                font-bold
+                            ">
 
                                 4.9★
 
@@ -379,17 +679,41 @@ function Home() {
             </section>
 
 
-            <section className="max-w-7xl mx-auto py-24 px-6">
+            {/* ================================================= */}
+            {/* CTA */}
+            {/* ================================================= */}
 
-                <div className="rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-16 text-center">
+            <section className="
+                max-w-7xl
+                mx-auto
+                py-24
+                px-6
+            ">
 
-                    <h2 className="text-5xl font-bold">
+                <div className="
+                    rounded-3xl
+                    bg-gradient-to-r
+                    from-blue-600
+                    to-indigo-700
+                    text-white
+                    p-16
+                    text-center
+                ">
+
+                    <h2 className="
+                        text-5xl
+                        font-bold
+                    ">
 
                         Need a Professional Today?
 
                     </h2>
 
-                    <p className="mt-5 text-lg">
+
+                    <p className="
+                        mt-5
+                        text-lg
+                    ">
 
                         Book trusted home services within minutes.
 
