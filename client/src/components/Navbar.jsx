@@ -69,8 +69,15 @@ function Navbar() {
 
         };
 
-        window.addEventListener("userUpdated", updateUser);
-        window.addEventListener("storage", updateUser);
+        window.addEventListener(
+            "userUpdated",
+            updateUser
+        );
+
+        window.addEventListener(
+            "storage",
+            updateUser
+        );
 
         return () => {
 
@@ -110,6 +117,185 @@ function Navbar() {
         user?.profileImage || null;
 
 
+    /* ================= DASHBOARD LINK ================= */
+
+    const DashboardLink = ({ mobile = false }) => {
+
+        if (user?.role === "customer") {
+
+            return (
+                <Link
+                    to="/my-bookings"
+                    className={
+                        mobile
+                            ? `
+                                flex
+                                items-center
+                                justify-center
+                                w-10
+                                h-10
+                                rounded-full
+                                text-gray-800
+                                hover:text-blue-600
+                                hover:bg-blue-50
+                                transition
+                              `
+                            : `
+                                flex
+                                flex-col
+                                items-center
+                                justify-center
+                                w-[70px]
+                                py-1
+                                rounded-xl
+                                text-gray-800
+                                hover:text-blue-600
+                                hover:bg-blue-50
+                                transition
+                              `
+                    }
+                >
+
+                    <CalendarDays
+                        size={mobile ? 22 : 21}
+                    />
+
+                    {!mobile && (
+                        <span className="
+                            text-[11px]
+                            font-medium
+                            leading-tight
+                            text-center
+                        ">
+                            My Bookings
+                        </span>
+                    )}
+
+                </Link>
+            );
+
+        }
+
+
+        if (user?.role === "provider") {
+
+            return (
+                <Link
+                    to="/provider-dashboard"
+                    className={
+                        mobile
+                            ? `
+                                flex
+                                items-center
+                                justify-center
+                                w-10
+                                h-10
+                                rounded-full
+                                text-gray-800
+                                hover:text-blue-600
+                                hover:bg-blue-50
+                                transition
+                              `
+                            : `
+                                flex
+                                flex-col
+                                items-center
+                                justify-center
+                                w-[70px]
+                                py-1
+                                rounded-xl
+                                text-gray-800
+                                hover:text-blue-600
+                                hover:bg-blue-50
+                                transition
+                              `
+                    }
+                >
+
+                    <BriefcaseBusiness
+                        size={mobile ? 22 : 21}
+                    />
+
+                    {!mobile && (
+                        <span className="
+                            text-[11px]
+                            font-medium
+                            leading-tight
+                            text-center
+                        ">
+                            Dashboard
+                        </span>
+                    )}
+
+                </Link>
+            );
+
+        }
+
+
+        if (
+            user?.role === "admin" ||
+            user?.role === "Admin"
+        ) {
+
+            return (
+                <Link
+                    to="/admin-dashboard"
+                    className={
+                        mobile
+                            ? `
+                                flex
+                                items-center
+                                justify-center
+                                w-10
+                                h-10
+                                rounded-full
+                                text-gray-800
+                                hover:text-blue-600
+                                hover:bg-blue-50
+                                transition
+                              `
+                            : `
+                                flex
+                                flex-col
+                                items-center
+                                justify-center
+                                w-[70px]
+                                py-1
+                                rounded-xl
+                                text-gray-800
+                                hover:text-blue-600
+                                hover:bg-blue-50
+                                transition
+                              `
+                    }
+                >
+
+                    <ShieldCheck
+                        size={mobile ? 22 : 21}
+                    />
+
+                    {!mobile && (
+                        <span className="
+                            text-[11px]
+                            font-medium
+                            leading-tight
+                            text-center
+                        ">
+                            Dashboard
+                        </span>
+                    )}
+
+                </Link>
+            );
+
+        }
+
+        return null;
+
+    };
+
+
     return (
 
         <nav className="
@@ -137,10 +323,13 @@ function Navbar() {
                     lg:h-[92px]
                     flex
                     items-center
-                    justify-start
+                    justify-between
                 ">
 
-                    {/* ================= LOGO ================= */}
+
+                    {/* ================================================= */}
+                    {/* LOGO */}
+                    {/* ================================================= */}
 
                     <Link
                         to="/"
@@ -161,8 +350,8 @@ function Navbar() {
                             h-12
                             sm:w-16
                             sm:h-16
-                            lg:w-[82px]
-                            lg:h-[82px]
+                            lg:w-[72px]
+                            lg:h-[72px]
                             flex-shrink-0
                             flex
                             items-center
@@ -184,8 +373,6 @@ function Navbar() {
 
                         </div>
 
-
-                        {/* WEBSITE NAME */}
 
                         <div className="leading-none">
 
@@ -236,18 +423,19 @@ function Navbar() {
                     {/* DESKTOP NAVIGATION */}
                     {/* ================================================= */}
 
-                    <div className="
-                        hidden
-                        md:flex
-                        items-center
-                        gap-4
-                        lg:gap-5
-                        ml-14
-                    ">
+                    {user && (
 
-                        {/* ================= HOME ================= */}
+                        <div className="
+                            hidden
+                            md:flex
+                            items-center
+                            gap-2
+                            lg:gap-3
+                            ml-3
+                        ">
 
-                        {user && (
+
+                            {/* HOME */}
 
                             <Link
                                 to="/"
@@ -256,6 +444,7 @@ function Navbar() {
                                     items-center
                                     gap-2
                                     px-3
+                                    lg:px-4
                                     py-3
                                     rounded-full
                                     text-gray-800
@@ -271,127 +460,22 @@ function Navbar() {
                                     strokeWidth={2}
                                 />
 
-                                <span className="font-medium">
+                                <span className="
+                                    font-medium
+                                ">
                                     Home
                                 </span>
 
                             </Link>
 
-                        )}
 
+                            {/* DASHBOARD */}
 
-                        {/* ================= CUSTOMER ================= */}
+                            <DashboardLink />
 
-                        {user?.role === "customer" && (
+                        </div>
 
-                            <Link
-                                to="/my-bookings"
-                                className="
-                                    flex
-                                    flex-col
-                                    items-center
-                                    justify-center
-                                    w-[70px]
-                                    py-1
-                                    rounded-xl
-                                    text-gray-800
-                                    hover:text-blue-600
-                                    hover:bg-blue-50
-                                    transition
-                                "
-                            >
-
-                                <CalendarDays size={21} />
-
-                                <span className="
-                                    text-[11px]
-                                    font-medium
-                                    leading-tight
-                                    text-center
-                                ">
-                                    My Bookings
-                                </span>
-
-                            </Link>
-
-                        )}
-
-
-                        {/* ================= PROVIDER ================= */}
-
-                        {user?.role === "provider" && (
-
-                            <Link
-                                to="/provider-dashboard"
-                                className="
-                                    flex
-                                    flex-col
-                                    items-center
-                                    justify-center
-                                    w-[70px]
-                                    py-1
-                                    rounded-xl
-                                    text-gray-800
-                                    hover:text-blue-600
-                                    hover:bg-blue-50
-                                    transition
-                                "
-                            >
-
-                                <BriefcaseBusiness size={21} />
-
-                                <span className="
-                                    text-[11px]
-                                    font-medium
-                                    leading-tight
-                                    text-center
-                                ">
-                                    Dashboard
-                                </span>
-
-                            </Link>
-
-                        )}
-
-
-                        {/* ================= ADMIN ================= */}
-
-                        {(user?.role === "admin" ||
-                            user?.role === "Admin") && (
-
-                            <Link
-                                to="/admin-dashboard"
-                                className="
-                                    flex
-                                    flex-col
-                                    items-center
-                                    justify-center
-                                    w-[70px]
-                                    py-1
-                                    rounded-xl
-                                    text-gray-800
-                                    hover:text-blue-600
-                                    hover:bg-blue-50
-                                    transition
-                                "
-                            >
-
-                                <ShieldCheck size={21} />
-
-                                <span className="
-                                    text-[11px]
-                                    font-medium
-                                    leading-tight
-                                    text-center
-                                ">
-                                    Dashboard
-                                </span>
-
-                            </Link>
-
-                        )}
-
-                    </div>
+                    )}
 
 
                     {/* ================================================= */}
@@ -401,61 +485,105 @@ function Navbar() {
                     <div className="
                         flex
                         items-center
-                        gap-4
-                        lg:gap-5
-                        ml-4
+                        gap-1.5
+                        sm:gap-2
+                        lg:gap-3
+                        ml-auto
                     ">
 
-                        {/* ================= GUEST ================= */}
+
+                        {/* ================================================= */}
+                        {/* MOBILE HOME */}
+                        {/* ================================================= */}
+
+                        {user && (
+
+                            <Link
+                                to="/"
+                                className="
+                                    md:hidden
+                                    flex
+                                    items-center
+                                    justify-center
+                                    w-10
+                                    h-10
+                                    rounded-full
+                                    text-gray-800
+                                    hover:text-blue-600
+                                    hover:bg-blue-50
+                                    transition
+                                    flex-shrink-0
+                                "
+                            >
+
+                                <HomeIcon
+                                    size={22}
+                                    strokeWidth={2}
+                                />
+
+                            </Link>
+
+                        )}
+
+
+
+
+                        {/* ================================================= */}
+                        {/* DESKTOP REGISTER */}
+                        {/* ================================================= */}
 
                         {!user && (
 
-                            <>
+                            <Link
+                                to="/register"
+                                className="
+                                    hidden
+                                    sm:block
+                                    px-4
+                                    lg:px-5
+                                    py-2
+                                    lg:py-2.5
+                                    rounded-full
+                                    text-blue-600
+                                    font-semibold
+                                    hover:bg-blue-50
+                                    transition
+                                    whitespace-nowrap
+                                "
+                            >
+                                Register
+                            </Link>
 
-                                {/* REGISTER - DESKTOP */}
-
-                                <Link
-                                    to="/register"
-                                    className="
-                                        hidden
-                                        sm:block
-                                        px-5
-                                        py-2.5
-                                        rounded-full
-                                        text-blue-600
-                                        font-semibold
-                                        hover:bg-blue-50
-                                        transition
-                                        whitespace-nowrap
-                                    "
-                                >
-                                    Register
-                                </Link>
+                        )}
 
 
-                                {/* LOGIN */}
+                        {/* ================================================= */}
+                        {/* LOGIN */}
+                        {/* ================================================= */}
 
-                                <Link
-                                    to="/login"
-                                    className="
-                                        bg-gradient-to-r
-                                        from-blue-600
-                                        to-indigo-600
-                                        text-white
-                                        px-5
-                                        py-2.5
-                                        rounded-full
-                                        font-semibold
-                                        shadow-md
-                                        hover:shadow-lg
-                                        transition
-                                        whitespace-nowrap
-                                    "
-                                >
-                                    Login
-                                </Link>
+                        {!user && (
 
-                            </>
+                            <Link
+                                to="/login"
+                                className="
+                                    bg-gradient-to-r
+                                    from-blue-600
+                                    to-indigo-600
+                                    text-white
+                                    px-4
+                                    sm:px-5
+                                    py-2
+                                    sm:py-2.5
+                                    rounded-full
+                                    font-semibold
+                                    shadow-md
+                                    hover:shadow-lg
+                                    transition
+                                    whitespace-nowrap
+                                "
+                            >
+                                Login
+                            </Link>
 
                         )}
 
@@ -470,8 +598,10 @@ function Navbar() {
                                 to="/notifications"
                                 className="
                                     relative
-                                    w-11
-                                    h-11
+                                    w-10
+                                    h-10
+                                    sm:w-11
+                                    sm:h-11
                                     flex
                                     items-center
                                     justify-center
@@ -485,7 +615,7 @@ function Navbar() {
                             >
 
                                 <Bell
-                                    size={24}
+                                    size={23}
                                     strokeWidth={2}
                                 />
 
@@ -493,8 +623,8 @@ function Navbar() {
 
                                     <span className="
                                         absolute
-                                        -top-1
-                                        -right-1
+                                        -top-0.5
+                                        -right-0.5
                                         min-w-5
                                         h-5
                                         px-1
@@ -511,7 +641,9 @@ function Navbar() {
                                         border-2
                                         border-white
                                     ">
+
                                         {notificationCount}
+
                                     </span>
 
                                 )}
@@ -527,7 +659,10 @@ function Navbar() {
 
                         {user && (
 
-                            <div className="relative">
+                            <div className="
+                                relative
+                                flex-shrink-0
+                            ">
 
                                 <button
                                     onClick={() =>
@@ -538,11 +673,10 @@ function Navbar() {
                                     className="
                                         flex
                                         items-center
-                                        gap-2
+                                        gap-1
+                                        sm:gap-2
                                     "
                                 >
-
-                                    {/* PROFILE IMAGE */}
 
                                     <div className="
                                         w-10
@@ -586,8 +720,10 @@ function Navbar() {
                                             ) : (
 
                                                 <User
-                                                    size={25}
-                                                    className="text-blue-600"
+                                                    size={24}
+                                                    className="
+                                                        text-blue-600
+                                                    "
                                                 />
 
                                             )}
@@ -652,6 +788,7 @@ function Navbar() {
                                             z-50
                                         ">
 
+
                                             {/* USER INFO */}
 
                                             <div className="
@@ -701,7 +838,9 @@ function Navbar() {
 
                                                             <User
                                                                 size={22}
-                                                                className="text-blue-600"
+                                                                className="
+                                                                    text-blue-600
+                                                                "
                                                             />
 
                                                         )}
@@ -709,7 +848,9 @@ function Navbar() {
                                                     </div>
 
 
-                                                    <div className="min-w-0">
+                                                    <div className="
+                                                        min-w-0
+                                                    ">
 
                                                         <p className="
                                                             font-bold
@@ -734,13 +875,146 @@ function Navbar() {
                                             </div>
 
 
-                                            {/* ================= MY PROFILE ================= */}
+                                            {/* ================================================= */}
+                                            {/* DASHBOARD INSIDE PROFILE */}
+                                            {/* ================================================= */}
 
                                             <button
                                                 onClick={() => {
 
                                                     setProfileOpen(false);
-                                                    navigate("/profile");
+
+                                                    if (
+                                                        user?.role ===
+                                                        "customer"
+                                                    ) {
+
+                                                        navigate(
+                                                            "/my-bookings"
+                                                        );
+
+                                                    } else if (
+                                                        user?.role ===
+                                                        "provider"
+                                                    ) {
+
+                                                        navigate(
+                                                            "/provider-dashboard"
+                                                        );
+
+                                                    } else if (
+                                                        user?.role ===
+                                                            "admin" ||
+                                                        user?.role ===
+                                                            "Admin"
+                                                    ) {
+
+                                                        navigate(
+                                                            "/admin-dashboard"
+                                                        );
+
+                                                    }
+
+                                                }}
+                                                className="
+                                                    w-full
+                                                    px-4
+                                                    sm:px-5
+                                                    py-3
+                                                    sm:py-4
+                                                    flex
+                                                    items-center
+                                                    gap-3
+                                                    sm:gap-4
+                                                    text-left
+                                                    hover:bg-blue-50
+                                                    transition
+                                                "
+                                            >
+
+                                                <div className="
+                                                    w-9
+                                                    h-9
+                                                    sm:w-10
+                                                    sm:h-10
+                                                    rounded-full
+                                                    bg-indigo-100
+                                                    flex
+                                                    items-center
+                                                    justify-center
+                                                ">
+
+                                                    {user?.role ===
+                                                    "customer" ? (
+
+                                                        <CalendarDays
+                                                            size={20}
+                                                            className="
+                                                                text-indigo-600
+                                                            "
+                                                        />
+
+                                                    ) : user?.role ===
+                                                        "provider" ? (
+
+                                                        <BriefcaseBusiness
+                                                            size={20}
+                                                            className="
+                                                                text-indigo-600
+                                                            "
+                                                        />
+
+                                                    ) : (
+
+                                                        <ShieldCheck
+                                                            size={20}
+                                                            className="
+                                                                text-indigo-600
+                                                            "
+                                                        />
+
+                                                    )}
+
+                                                </div>
+
+
+                                                <span className="
+                                                    font-medium
+                                                    text-gray-800
+                                                ">
+
+                                                    {user?.role ===
+                                                    "customer"
+                                                        ? "My Bookings"
+                                                        : "Dashboard"}
+
+                                                </span>
+
+                                            </button>
+
+
+                                            {/* DIVIDER */}
+
+                                            <div className="
+                                                h-px
+                                                bg-gray-100
+                                                mx-4
+                                                sm:mx-5
+                                            " />
+
+
+                                            {/* ================================================= */}
+                                            {/* MY PROFILE */}
+                                            {/* ================================================= */}
+
+                                            <button
+                                                onClick={() => {
+
+                                                    setProfileOpen(false);
+
+                                                    navigate(
+                                                        "/profile"
+                                                    );
 
                                                 }}
                                                 className="
@@ -773,7 +1047,9 @@ function Navbar() {
 
                                                     <User
                                                         size={20}
-                                                        className="text-blue-600"
+                                                        className="
+                                                            text-blue-600
+                                                        "
                                                     />
 
                                                 </div>
@@ -788,6 +1064,8 @@ function Navbar() {
                                             </button>
 
 
+                                            {/* DIVIDER */}
+
                                             <div className="
                                                 h-px
                                                 bg-gray-100
@@ -796,7 +1074,9 @@ function Navbar() {
                                             " />
 
 
-                                            {/* ================= LOGOUT ================= */}
+                                            {/* ================================================= */}
+                                            {/* LOGOUT */}
+                                            {/* ================================================= */}
 
                                             <button
                                                 onClick={logout}
@@ -830,7 +1110,9 @@ function Navbar() {
 
                                                     <LogOut
                                                         size={20}
-                                                        className="text-red-600"
+                                                        className="
+                                                            text-red-600
+                                                        "
                                                     />
 
                                                 </div>
@@ -854,165 +1136,13 @@ function Navbar() {
 
                         )}
 
-
-                        {/* ================================================= */}
-                        {/* MOBILE HOME */}
-                        {/* ================================================= */}
-
-                        <Link
-                            to="/"
-                            className="
-                                md:hidden
-                                w-10
-                                h-10
-                                flex
-                                items-center
-                                justify-center
-                                rounded-full
-                                text-gray-800
-                                hover:bg-blue-50
-                                hover:text-blue-600
-                                transition
-                            "
-                        >
-
-                            <HomeIcon size={23} />
-
-                        </Link>
-
                     </div>
 
                 </div>
 
 
                 {/* ================================================= */}
-                {/* MOBILE NAVIGATION */}
-                {/* ================================================= */}
-
-                <div className="
-                    md:hidden
-                    border-t
-                    border-gray-100
-                    bg-white
-                ">
-
-                    <div className="
-                        px-3
-                        py-2
-                        flex
-                        items-center
-                        justify-center
-                        gap-4
-                    ">
-
-                        {/* MOBILE DASHBOARD */}
-
-                        {user?.role === "customer" && (
-
-                            <Link
-                                to="/my-bookings"
-                                className="
-                                    flex
-                                    flex-col
-                                    items-center
-                                    justify-center
-                                    w-[70px]
-                                    py-1
-                                    rounded-xl
-                                    text-gray-800
-                                    hover:text-blue-600
-                                    hover:bg-blue-50
-                                    transition
-                                "
-                            >
-
-                                <CalendarDays size={21} />
-
-                                <span className="
-                                    text-[11px]
-                                    font-medium
-                                ">
-                                    My Bookings
-                                </span>
-
-                            </Link>
-
-                        )}
-
-
-                        {user?.role === "provider" && (
-
-                            <Link
-                                to="/provider-dashboard"
-                                className="
-                                    flex
-                                    flex-col
-                                    items-center
-                                    justify-center
-                                    w-[70px]
-                                    py-1
-                                    rounded-xl
-                                    text-gray-800
-                                    hover:text-blue-600
-                                    hover:bg-blue-50
-                                    transition
-                                "
-                            >
-
-                                <BriefcaseBusiness size={21} />
-
-                                <span className="
-                                    text-[11px]
-                                    font-medium
-                                ">
-                                    Dashboard
-                                </span>
-
-                            </Link>
-
-                        )}
-
-
-                        {(user?.role === "admin" ||
-                            user?.role === "Admin") && (
-
-                            <Link
-                                to="/admin-dashboard"
-                                className="
-                                    flex
-                                    flex-col
-                                    items-center
-                                    justify-center
-                                    w-[70px]
-                                    py-1
-                                    rounded-xl
-                                    text-gray-800
-                                    hover:text-blue-600
-                                    hover:bg-blue-50
-                                    transition
-                                "
-                            >
-
-                                <ShieldCheck size={21} />
-
-                                <span className="
-                                    text-[11px]
-                                    font-medium
-                                ">
-                                    Dashboard
-                                </span>
-
-                            </Link>
-
-                        )}
-
-                    </div>
-
-                </div>
-
-
-                {/* ================================================= */}
-                {/* BLUE / PURPLE CURVED BOTTOM STRIP */}
+                {/* CURVED BOTTOM STRIP */}
                 {/* ================================================= */}
 
                 <div className="
