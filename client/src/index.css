@@ -1,1 +1,201 @@
 @import "tailwindcss";
+
+/* =========================================================
+   MULTISERVE — GLOBAL STYLES
+   ========================================================= */
+
+:root {
+    font-family:
+        "Plus Jakarta Sans",
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    color: #1b1b24;
+    background: #fcf8ff;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* =========================================================
+   GLOBAL RESET
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+
+    background: #fcf8ff;
+    color: #1b1b24;
+
+    font-family:
+        "Plus Jakarta Sans",
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   LINKS
+   ========================================================= */
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   IMAGES
+   ========================================================= */
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+
+/* =========================================================
+   TEXT SELECTION
+   ========================================================= */
+
+::selection {
+    background: #3525cd;
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   FOCUS ACCESSIBILITY
+   ========================================================= */
+
+:focus-visible {
+    outline: 3px solid rgba(53, 37, 205, 0.25);
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar {
+    width: 9px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f5f2ff;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c9c4df;
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #3525cd;
+}
+
+
+/* =========================================================
+   FORM PLACEHOLDER
+   ========================================================= */
+
+::placeholder {
+    color: #9693a3;
+    opacity: 1;
+}
+
+
+/* =========================================================
+   MOBILE TAP EXPERIENCE
+   ========================================================= */
+
+button,
+a,
+input,
+textarea,
+select {
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/* =========================================================
+   SMOOTH INTERACTIONS
+   ========================================================= */
+
+button,
+a {
+    transition:
+        color 180ms ease,
+        background-color 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        transform 180ms ease;
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+
+/* =========================================================
+   MOBILE TYPOGRAPHY
+   ========================================================= */
+
+@media (max-width: 640px) {
+    body {
+        font-size: 14px;
+    }
+}

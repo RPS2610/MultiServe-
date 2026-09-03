@@ -16,16 +16,19 @@ import {
     FaPlus,
     FaEdit,
     FaTrash,
-    FaTimes
+    FaTimes,
+    FaLayerGroup,
+    FaImage,
+    FaArrowRight,
+    FaCheckCircle
 } from "react-icons/fa";
 
 function ManageServices() {
 
     const [services, setServices] = useState([]);
-
     const [search, setSearch] = useState("");
-
     const [editingId, setEditingId] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -33,28 +36,36 @@ function ManageServices() {
         image: ""
     });
 
+
     useEffect(() => {
 
         fetchServices();
 
     }, []);
 
+
     const fetchServices = async () => {
 
         try {
+
+            setLoading(true);
 
             const data = await getAllServices();
 
             setServices(data);
 
-        }
-        catch (error) {
+        } catch (error) {
 
             console.log(error);
+
+        } finally {
+
+            setLoading(false);
 
         }
 
     };
+
 
     const handleChange = (e) => {
 
@@ -67,6 +78,7 @@ function ManageServices() {
         });
 
     };
+
 
     const resetForm = () => {
 
@@ -81,6 +93,7 @@ function ManageServices() {
         setEditingId(null);
 
     };
+
 
     const handleSubmit = async (e) => {
 
@@ -97,8 +110,7 @@ function ManageServices() {
 
                 alert("Service Updated Successfully");
 
-            }
-            else {
+            } else {
 
                 await addService(formData);
 
@@ -110,8 +122,7 @@ function ManageServices() {
 
             fetchServices();
 
-        }
-        catch (error) {
+        } catch (error) {
 
             alert(
                 error.response?.data?.message ||
@@ -121,6 +132,7 @@ function ManageServices() {
         }
 
     };
+
 
     const handleDelete = async (id) => {
 
@@ -138,8 +150,7 @@ function ManageServices() {
 
             fetchServices();
 
-        }
-        catch (error) {
+        } catch (error) {
 
             alert(
                 error.response?.data?.message ||
@@ -149,6 +160,7 @@ function ManageServices() {
         }
 
     };
+
 
     const handleEdit = (service) => {
 
@@ -174,389 +186,609 @@ function ManageServices() {
 
     };
 
+
     const filteredServices = services.filter(
         (service) =>
             (service.name || "")
                 .toLowerCase()
                 .includes(search.toLowerCase())
     );
-        return (
+
+
+    return (
 
         <>
 
             <Navbar />
 
-            {/* Hero */}
 
-            <section className="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 text-white">
+            <main className="min-h-screen bg-[#fcf8ff]">
 
-                <div className="max-w-7xl mx-auto px-6 py-14">
 
-                    <div className="flex items-center gap-5">
+                {/* =====================================================
+                    HERO
+                ====================================================== */}
 
-                        <div className="bg-white/20 p-5 rounded-2xl">
+                <section className="relative overflow-hidden bg-[#3525cd] text-white">
 
-                            <FaTools className="text-5xl" />
+                    <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
 
-                        </div>
+                    <div className="absolute -bottom-32 left-1/3 h-80 w-80 rounded-full bg-purple-400/20 blur-3xl" />
 
-                        <div>
 
-                            <h1 className="text-5xl font-bold">
+                    <div className="relative max-w-7xl mx-auto px-5 sm:px-6 py-11 sm:py-14">
 
-                                Manage Services
+                        <div className="flex items-center gap-3 text-indigo-200 text-sm font-semibold">
 
-                            </h1>
+                            <FaTools />
 
-                            <p className="text-xl text-blue-100 mt-3">
-
-                                Add, update and manage all services offered on MultiServe.
-
-                            </p>
+                            Service Management
 
                         </div>
+
+
+                        <h1 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
+
+                            Manage Services
+
+                        </h1>
+
+
+                        <p className="mt-4 max-w-2xl text-sm sm:text-base lg:text-lg leading-7 text-indigo-100">
+
+                            Add, update and organize the services available
+
+                            to customers across the MultiServe platform.
+
+                        </p>
 
                     </div>
 
-                </div>
+                </section>
 
-            </section>
 
-            <div className="max-w-7xl mx-auto px-6 py-10">
+                {/* =====================================================
+                    CONTENT
+                ====================================================== */}
 
-                {/* Add / Edit Service */}
+                <div className="max-w-7xl mx-auto px-5 sm:px-6 py-8 sm:py-10">
 
-                <div className="bg-white rounded-3xl shadow-xl p-8 mb-10">
 
-                    <div className="flex justify-between items-center mb-7">
+                    {/* =================================================
+                        OVERVIEW
+                    ================================================== */}
 
-                        <div>
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
 
-                            <h2 className="text-3xl font-bold">
+                        <div className="rounded-2xl border border-slate-100 bg-white p-5 sm:p-6 shadow-[0_8px_30px_rgba(30,27,75,0.05)]">
 
-                                {editingId
-                                    ? "Edit Service"
-                                    : "Add New Service"}
+                            <div className="flex items-start justify-between">
+
+                                <div className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-indigo-50 text-[#3525cd]">
+
+                                    <FaLayerGroup />
+
+                                </div>
+
+                                <span className="hidden sm:block text-xs font-semibold text-slate-400">
+
+                                    Platform
+
+                                </span>
+
+                            </div>
+
+
+                            <p className="mt-5 text-xs sm:text-sm font-medium text-slate-500">
+
+                                Total Services
+
+                            </p>
+
+
+                            <h2 className="mt-1 text-2xl sm:text-3xl font-extrabold text-[#1b1b24]">
+
+                                {services.length}
 
                             </h2>
 
-                            <p className="text-gray-500 mt-2">
 
-                                {editingId
-                                    ? "Update the service information below."
-                                    : "Create a new service for customers."}
+                            <p className="mt-1 text-xs sm:text-sm text-slate-400">
+
+                                Available service categories
 
                             </p>
 
                         </div>
 
-                        {
 
-                            editingId && (
+                        <div className="rounded-2xl border border-slate-100 bg-white p-5 sm:p-6 shadow-[0_8px_30px_rgba(30,27,75,0.05)]">
 
-                                <button
+                            <div className="flex items-start justify-between">
 
-                                    type="button"
+                                <div className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
 
-                                    onClick={resetForm}
+                                    <FaCheckCircle />
 
-                                    className="bg-gray-200 hover:bg-gray-300 p-3 rounded-xl"
+                                </div>
 
-                                >
+                                <span className="hidden sm:block text-xs font-semibold text-slate-400">
 
-                                    <FaTimes />
+                                    Active
 
-                                </button>
+                                </span>
 
-                            )
+                            </div>
 
-                        }
+
+                            <p className="mt-5 text-xs sm:text-sm font-medium text-slate-500">
+
+                                Services Listed
+
+                            </p>
+
+
+                            <h2 className="mt-1 text-2xl sm:text-3xl font-extrabold text-[#1b1b24]">
+
+                                {services.length}
+
+                            </h2>
+
+
+                            <p className="mt-1 text-xs sm:text-sm text-slate-400">
+
+                                Currently in directory
+
+                            </p>
+
+                        </div>
+
+
+                        <div className="col-span-2 lg:col-span-1 rounded-2xl border border-slate-100 bg-white p-5 sm:p-6 shadow-[0_8px_30px_rgba(30,27,75,0.05)]">
+
+                            <div className="flex items-start justify-between">
+
+                                <div className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-purple-50 text-purple-600">
+
+                                    <FaImage />
+
+                                </div>
+
+                                <span className="hidden sm:block text-xs font-semibold text-slate-400">
+
+                                    Media
+
+                                </span>
+
+                            </div>
+
+
+                            <p className="mt-5 text-xs sm:text-sm font-medium text-slate-500">
+
+                                Services With Images
+
+                            </p>
+
+
+                            <h2 className="mt-1 text-2xl sm:text-3xl font-extrabold text-[#1b1b24]">
+
+                                {
+                                    services.filter(
+                                        service => service.image
+                                    ).length
+                                }
+
+                            </h2>
+
+
+                            <p className="mt-1 text-xs sm:text-sm text-slate-400">
+
+                                Visual service listings
+
+                            </p>
+
+                        </div>
 
                     </div>
 
-                    <form onSubmit={handleSubmit}>
 
-                        <div className="grid md:grid-cols-2 gap-6">
+                    {/* =================================================
+                        ADD / EDIT FORM
+                    ================================================== */}
 
-                            <div>
+                    <section className="rounded-3xl border border-slate-100 bg-white shadow-[0_8px_30px_rgba(30,27,75,0.05)] overflow-hidden">
 
-                                <label className="block font-semibold mb-2">
+                        <div className="border-b border-slate-100 px-5 sm:px-7 py-5 sm:py-6">
 
-                                    Service Name
+                            <div className="flex items-start justify-between gap-4">
 
-                                </label>
+                                <div>
 
-                                <input
+                                    <div className="flex items-center gap-3">
 
-                                    type="text"
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-[#3525cd]">
 
-                                    name="name"
+                                            {editingId
+                                                ? <FaEdit />
+                                                : <FaPlus />
+                                            }
 
-                                    value={formData.name}
+                                        </div>
 
-                                    onChange={handleChange}
+                                        <div>
 
-                                    placeholder="Example: Electrician"
+                                            <h2 className="text-xl sm:text-2xl font-extrabold text-[#1b1b24]">
 
-                                    className="w-full border border-gray-200 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                {editingId
+                                                    ? "Edit Service"
+                                                    : "Add New Service"
+                                                }
 
-                                    required
+                                            </h2>
 
-                                />
+                                            <p className="mt-1 text-xs sm:text-sm text-slate-500">
 
-                            </div>
+                                                {editingId
+                                                    ? "Update the service information below."
+                                                    : "Create a new service for MultiServe customers."
+                                                }
 
-                            <div>
+                                            </p>
 
-                                <label className="block font-semibold mb-2">
+                                        </div>
 
-                                    Image URL
+                                    </div>
 
-                                </label>
+                                </div>
 
-                                <input
 
-                                    type="text"
+                                {editingId && (
 
-                                    name="image"
+                                    <button
+                                        type="button"
+                                        onClick={resetForm}
+                                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition hover:bg-slate-200 hover:text-slate-700"
+                                        aria-label="Cancel editing"
+                                    >
 
-                                    value={formData.image}
+                                        <FaTimes />
 
-                                    onChange={handleChange}
-
-                                    placeholder="https://example.com/image.jpg"
-
-                                    className="w-full border border-gray-200 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-
-                                />
-
-                            </div>
-
-                        </div>
-
-                        <div className="mt-6">
-
-                            <label className="block font-semibold mb-2">
-
-                                Description
-
-                            </label>
-
-                            <textarea
-
-                                name="description"
-
-                                value={formData.description}
-
-                                onChange={handleChange}
-
-                                rows="4"
-
-                                placeholder="Describe this service..."
-
-                                className="w-full border border-gray-200 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-
-                                required
-
-                            />
-
-                        </div>
-
-                        <div className="flex gap-4 mt-6">
-
-                            <button
-
-                                type="submit"
-
-                                className={`px-7 py-3 rounded-xl text-white font-semibold flex items-center gap-2 ${
-                                    editingId
-                                        ? "bg-green-600 hover:bg-green-700"
-                                        : "bg-blue-600 hover:bg-blue-700"
-                                }`}
-
-                            >
-
-                                {editingId ? (
-
-                                    <>
-
-                                        <FaEdit />
-
-                                        Update Service
-
-                                    </>
-
-                                ) : (
-
-                                    <>
-
-                                        <FaPlus />
-
-                                        Add Service
-
-                                    </>
+                                    </button>
 
                                 )}
 
-                            </button>
+                            </div>
 
-                            {
+                        </div>
 
-                                editingId && (
+
+                        <form
+                            onSubmit={handleSubmit}
+                            className="p-5 sm:p-7"
+                        >
+
+                            <div className="grid md:grid-cols-2 gap-5">
+
+
+                                {/* SERVICE NAME */}
+
+                                <div>
+
+                                    <label className="mb-2 block text-sm font-bold text-[#1b1b24]">
+
+                                        Service Name
+
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        placeholder="Example: Electrician"
+                                        className="w-full rounded-xl border border-slate-200 bg-[#fcf8ff] px-4 py-3.5 text-sm text-[#1b1b24] outline-none transition focus:border-[#3525cd] focus:ring-4 focus:ring-indigo-100"
+                                        required
+                                    />
+
+                                </div>
+
+
+                                {/* IMAGE */}
+
+                                <div>
+
+                                    <label className="mb-2 block text-sm font-bold text-[#1b1b24]">
+
+                                        Image URL
+
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="image"
+                                        value={formData.image}
+                                        onChange={handleChange}
+                                        placeholder="https://example.com/image.jpg"
+                                        className="w-full rounded-xl border border-slate-200 bg-[#fcf8ff] px-4 py-3.5 text-sm text-[#1b1b24] outline-none transition focus:border-[#3525cd] focus:ring-4 focus:ring-indigo-100"
+                                    />
+
+                                </div>
+
+                            </div>
+
+
+                            {/* DESCRIPTION */}
+
+                            <div className="mt-5">
+
+                                <label className="mb-2 block text-sm font-bold text-[#1b1b24]">
+
+                                    Description
+
+                                </label>
+
+                                <textarea
+                                    name="description"
+                                    value={formData.description}
+                                    onChange={handleChange}
+                                    rows="4"
+                                    placeholder="Describe this service..."
+                                    className="w-full resize-none rounded-xl border border-slate-200 bg-[#fcf8ff] px-4 py-3.5 text-sm leading-6 text-[#1b1b24] outline-none transition focus:border-[#3525cd] focus:ring-4 focus:ring-indigo-100"
+                                    required
+                                />
+
+                            </div>
+
+
+                            {/* BUTTONS */}
+
+                            <div className="mt-6 flex flex-col sm:flex-row gap-3">
+
+                                <button
+                                    type="submit"
+                                    className={`inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 ${
+                                        editingId
+                                            ? "bg-emerald-600 hover:bg-emerald-700"
+                                            : "bg-[#3525cd] hover:bg-[#2d20b0]"
+                                    }`}
+                                >
+
+                                    {editingId ? (
+                                        <>
+                                            <FaEdit />
+                                            Update Service
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FaPlus />
+                                            Add Service
+                                        </>
+                                    )}
+
+                                </button>
+
+
+                                {editingId && (
 
                                     <button
-
                                         type="button"
-
                                         onClick={resetForm}
-
-                                        className="px-7 py-3 rounded-xl bg-gray-200 hover:bg-gray-300 font-semibold"
-
+                                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 px-6 py-3.5 text-sm font-bold text-slate-600 transition hover:bg-slate-200"
                                     >
+
+                                        <FaTimes />
 
                                         Cancel
 
                                     </button>
 
-                                )
+                                )}
 
-                            }
+                            </div>
+
+                        </form>
+
+                    </section>
+
+
+                    {/* =================================================
+                        SEARCH
+                    ================================================== */}
+
+                    <section className="mt-8">
+
+                        <div className="rounded-3xl border border-slate-100 bg-white p-5 sm:p-6 shadow-[0_8px_30px_rgba(30,27,75,0.05)]">
+
+                            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+
+                                <div>
+
+                                    <p className="text-xs font-bold uppercase tracking-wider text-[#3525cd]">
+
+                                        Service directory
+
+                                    </p>
+
+                                    <h2 className="mt-1 text-xl sm:text-2xl font-extrabold text-[#1b1b24]">
+
+                                        All Services
+
+                                    </h2>
+
+                                    <p className="mt-1 text-sm text-slate-500">
+
+                                        {search
+                                            ? `${filteredServices.length} matching services`
+                                            : `${services.length} services available`
+                                        }
+
+                                    </p>
+
+                                </div>
+
+
+                                <div className="relative w-full lg:max-w-md">
+
+                                    <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+
+                                    <input
+                                        type="text"
+                                        placeholder="Search services..."
+                                        value={search}
+                                        onChange={(e) =>
+                                            setSearch(e.target.value)
+                                        }
+                                        className="w-full rounded-xl border border-slate-200 bg-[#fcf8ff] py-3.5 pl-11 pr-4 text-sm text-[#1b1b24] outline-none transition focus:border-[#3525cd] focus:ring-4 focus:ring-indigo-100"
+                                    />
+
+                                </div>
+
+                            </div>
 
                         </div>
 
-                    </form>
+                    </section>
 
-                </div>
-                                {/* Search */}
 
-                <div className="relative mb-10">
+                    {/* =================================================
+                        SERVICE GRID
+                    ================================================== */}
 
-                    <FaSearch className="absolute left-5 top-5 text-gray-400" />
+                    <section className="mt-6">
 
-                    <input
+                        {loading ? (
 
-                        type="text"
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
 
-                        placeholder="Search services..."
-
-                        value={search}
-
-                        onChange={(e) => setSearch(e.target.value)}
-
-                        className="w-full bg-white border border-gray-200 rounded-2xl pl-14 pr-6 py-4 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-
-                    />
-
-                </div>
-
-                {/* Services */}
-
-                {
-
-                    filteredServices.length === 0 ? (
-
-                        <div className="bg-white rounded-3xl shadow-lg py-20 text-center">
-
-                            <FaTools className="text-7xl text-gray-300 mx-auto mb-6" />
-
-                            <h2 className="text-3xl font-bold">
-
-                                No Services Found
-
-                            </h2>
-
-                            <p className="text-gray-500 mt-3">
-
-                                Add a new service or try another search.
-
-                            </p>
-
-                        </div>
-
-                    ) : (
-
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
-
-                            {
-
-                                filteredServices.map((service) => (
+                                {[1, 2, 3, 4, 5, 6].map((item) => (
 
                                     <div
-
-                                        key={service._id}
-
-                                        className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition duration-300 overflow-hidden"
-
+                                        key={item}
+                                        className="overflow-hidden rounded-3xl border border-slate-100 bg-white animate-pulse"
                                     >
 
-                                        {/* Image */}
-
-                                        <div className="h-48 bg-gray-100">
-
-                                            <img
-
-                                                src={
-
-                                                    service.image ||
-
-                                                    "https://placehold.co/600x400"
-
-                                                }
-
-                                                alt={service.name}
-
-                                                className="w-full h-full object-cover"
-
-                                            />
-
-                                        </div>
-
-                                        {/* Content */}
+                                        <div className="h-48 bg-slate-100" />
 
                                         <div className="p-6">
 
-                                            <h2 className="text-2xl font-bold">
+                                            <div className="h-6 w-36 rounded bg-slate-100" />
+
+                                            <div className="mt-4 h-4 w-full rounded bg-slate-100" />
+
+                                            <div className="mt-2 h-4 w-3/4 rounded bg-slate-100" />
+
+                                            <div className="mt-6 h-11 rounded-xl bg-slate-100" />
+
+                                        </div>
+
+                                    </div>
+
+                                ))}
+
+                            </div>
+
+                        ) : filteredServices.length === 0 ? (
+
+                            <div className="rounded-3xl border border-dashed border-slate-200 bg-white px-6 py-16 text-center">
+
+                                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-50 text-[#3525cd]">
+
+                                    <FaTools className="text-xl" />
+
+                                </div>
+
+                                <h2 className="mt-5 text-xl sm:text-2xl font-extrabold text-[#1b1b24]">
+
+                                    No Services Found
+
+                                </h2>
+
+                                <p className="mt-2 text-sm text-slate-500">
+
+                                    Add a new service or try another search.
+
+                                </p>
+
+                            </div>
+
+                        ) : (
+
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+                                {filteredServices.map((service) => (
+
+                                    <article
+                                        key={service._id}
+                                        className="group overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-[0_8px_30px_rgba(30,27,75,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(30,27,75,0.09)]"
+                                    >
+
+                                        {/* IMAGE */}
+
+                                        <div className="relative h-48 overflow-hidden bg-slate-100">
+
+                                            <img
+                                                src={
+                                                    service.image ||
+                                                    "https://placehold.co/600x400"
+                                                }
+                                                alt={service.name}
+                                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                            />
+
+
+                                            <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#3525cd] backdrop-blur">
+
+                                                Service
+
+                                            </div>
+
+                                        </div>
+
+
+                                        {/* CONTENT */}
+
+                                        <div className="p-5 sm:p-6">
+
+                                            <h2 className="text-lg sm:text-xl font-extrabold text-[#1b1b24]">
 
                                                 {service.name}
 
                                             </h2>
 
-                                            <p className="text-gray-500 mt-3 min-h-[60px]">
+
+                                            <p className="mt-3 min-h-[72px] text-sm leading-6 text-slate-500">
 
                                                 {service.description ||
-                                                    "Professional service available on MultiServe."}
+                                                    "Professional service available on MultiServe."
+                                                }
 
                                             </p>
 
-                                            <div className="flex gap-3 mt-6">
+
+                                            <div className="mt-5 flex gap-2">
 
                                                 <button
-
                                                     onClick={() =>
                                                         handleEdit(service)
                                                     }
-
-                                                    className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
-
+                                                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-700 transition hover:bg-emerald-600 hover:text-white"
                                                 >
 
-                                                    <FaEdit />
+                                                    <FaEdit className="text-xs" />
 
                                                     Edit
 
                                                 </button>
 
-                                                <button
 
+                                                <button
                                                     onClick={() =>
                                                         handleDelete(service._id)
                                                     }
-
-                                                    className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
-
+                                                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-red-50 px-4 py-3 text-sm font-bold text-red-600 transition hover:bg-red-600 hover:text-white"
                                                 >
 
-                                                    <FaTrash />
+                                                    <FaTrash className="text-xs" />
 
                                                     Delete
 
@@ -566,19 +798,62 @@ function ManageServices() {
 
                                         </div>
 
-                                    </div>
+                                    </article>
 
-                                ))
+                                ))}
 
-                            }
+                            </div>
+
+                        )}
+
+                    </section>
+
+
+                    {/* =================================================
+                        FOOTER INFO
+                    ================================================== */}
+
+                    <div className="mt-8 rounded-2xl border border-indigo-100 bg-[#f5f2ff] px-5 py-4">
+
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+
+                            <div className="flex items-center gap-3">
+
+                                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-[#3525cd]">
+
+                                    <FaTools className="text-sm" />
+
+                                </div>
+
+                                <p className="text-xs sm:text-sm text-slate-600">
+
+                                    Keep service names, descriptions and images
+
+                                    accurate for the best customer experience.
+
+                                </p>
+
+                            </div>
+
+
+                            <div className="flex items-center gap-2 text-xs font-bold text-[#3525cd]">
+
+                                {filteredServices.length}
+
+                                displayed
+
+                                <FaArrowRight className="text-[9px]" />
+
+                            </div>
 
                         </div>
 
-                    )
+                    </div>
 
-                }
+                </div>
 
-            </div>
+            </main>
+
 
             <Footer />
 

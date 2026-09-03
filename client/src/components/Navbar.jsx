@@ -18,20 +18,29 @@ function Navbar() {
 
     const navigate = useNavigate();
 
-    const [user, setUser] = useState(
-        JSON.parse(localStorage.getItem("user"))
-    );
+    const [user, setUser] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem("user"));
+        } catch {
+            return null;
+        }
+    });
 
     const [notificationCount, setNotificationCount] = useState(0);
     const [profileOpen, setProfileOpen] = useState(false);
 
-    /* ================= NOTIFICATIONS ================= */
+    /* =========================================================
+       NOTIFICATIONS
+    ========================================================= */
 
     useEffect(() => {
 
         const loadNotifications = async () => {
 
-            if (!user?._id) return;
+            if (!user?._id) {
+                setNotificationCount(0);
+                return;
+            }
 
             try {
 
@@ -56,16 +65,26 @@ function Navbar() {
     }, [user]);
 
 
-    /* ================= UPDATE USER ================= */
+    /* =========================================================
+       UPDATE USER
+    ========================================================= */
 
     useEffect(() => {
 
         const updateUser = () => {
 
-            const updatedUser =
-                JSON.parse(localStorage.getItem("user"));
+            try {
 
-            setUser(updatedUser);
+                const updatedUser =
+                    JSON.parse(localStorage.getItem("user"));
+
+                setUser(updatedUser);
+
+            } catch {
+
+                setUser(null);
+
+            }
 
         };
 
@@ -96,7 +115,9 @@ function Navbar() {
     }, []);
 
 
-    /* ================= LOGOUT ================= */
+    /* =========================================================
+       LOGOUT
+    ========================================================= */
 
     const logout = () => {
 
@@ -111,65 +132,54 @@ function Navbar() {
     };
 
 
-    /* ================= PROFILE IMAGE ================= */
+    /* =========================================================
+       PROFILE IMAGE
+    ========================================================= */
 
     const profileImage =
         user?.profileImage || null;
 
 
-    /* ================= DASHBOARD LINK ================= */
+    /* =========================================================
+       DESKTOP DASHBOARD LINK
+       This remains visible in the main navbar.
+    ========================================================= */
 
-    const DashboardLink = ({ mobile = false }) => {
+    const DashboardLink = () => {
 
         if (user?.role === "customer") {
 
             return (
                 <Link
                     to="/my-bookings"
-                    className={
-                        mobile
-                            ? `
-                                flex
-                                items-center
-                                justify-center
-                                w-10
-                                h-10
-                                rounded-full
-                                text-gray-800
-                                hover:text-blue-600
-                                hover:bg-blue-50
-                                transition
-                              `
-                            : `
-                                flex
-                                flex-col
-                                items-center
-                                justify-center
-                                w-[70px]
-                                py-1
-                                rounded-xl
-                                text-gray-800
-                                hover:text-blue-600
-                                hover:bg-blue-50
-                                transition
-                              `
-                    }
+                    className="
+                        flex
+                        flex-col
+                        items-center
+                        justify-center
+                        w-[80px]
+                        py-1
+                        rounded-xl
+                        text-gray-800
+                        hover:text-blue-600
+                        hover:bg-blue-50
+                        transition
+                    "
                 >
 
                     <CalendarDays
-                        size={mobile ? 22 : 21}
+                        size={21}
+                        strokeWidth={2}
                     />
 
-                    {!mobile && (
-                        <span className="
-                            text-[11px]
-                            font-medium
-                            leading-tight
-                            text-center
-                        ">
-                            My Bookings
-                        </span>
-                    )}
+                    <span className="
+                        text-[11px]
+                        font-medium
+                        leading-tight
+                        text-center
+                    ">
+                        My Bookings
+                    </span>
 
                 </Link>
             );
@@ -182,50 +192,34 @@ function Navbar() {
             return (
                 <Link
                     to="/provider-dashboard"
-                    className={
-                        mobile
-                            ? `
-                                flex
-                                items-center
-                                justify-center
-                                w-10
-                                h-10
-                                rounded-full
-                                text-gray-800
-                                hover:text-blue-600
-                                hover:bg-blue-50
-                                transition
-                              `
-                            : `
-                                flex
-                                flex-col
-                                items-center
-                                justify-center
-                                w-[70px]
-                                py-1
-                                rounded-xl
-                                text-gray-800
-                                hover:text-blue-600
-                                hover:bg-blue-50
-                                transition
-                              `
-                    }
+                    className="
+                        flex
+                        flex-col
+                        items-center
+                        justify-center
+                        w-[70px]
+                        py-1
+                        rounded-xl
+                        text-gray-800
+                        hover:text-blue-600
+                        hover:bg-blue-50
+                        transition
+                    "
                 >
 
                     <BriefcaseBusiness
-                        size={mobile ? 22 : 21}
+                        size={21}
+                        strokeWidth={2}
                     />
 
-                    {!mobile && (
-                        <span className="
-                            text-[11px]
-                            font-medium
-                            leading-tight
-                            text-center
-                        ">
-                            Dashboard
-                        </span>
-                    )}
+                    <span className="
+                        text-[11px]
+                        font-medium
+                        leading-tight
+                        text-center
+                    ">
+                        Dashboard
+                    </span>
 
                 </Link>
             );
@@ -241,50 +235,34 @@ function Navbar() {
             return (
                 <Link
                     to="/admin-dashboard"
-                    className={
-                        mobile
-                            ? `
-                                flex
-                                items-center
-                                justify-center
-                                w-10
-                                h-10
-                                rounded-full
-                                text-gray-800
-                                hover:text-blue-600
-                                hover:bg-blue-50
-                                transition
-                              `
-                            : `
-                                flex
-                                flex-col
-                                items-center
-                                justify-center
-                                w-[70px]
-                                py-1
-                                rounded-xl
-                                text-gray-800
-                                hover:text-blue-600
-                                hover:bg-blue-50
-                                transition
-                              `
-                    }
+                    className="
+                        flex
+                        flex-col
+                        items-center
+                        justify-center
+                        w-[70px]
+                        py-1
+                        rounded-xl
+                        text-gray-800
+                        hover:text-blue-600
+                        hover:bg-blue-50
+                        transition
+                    "
                 >
 
                     <ShieldCheck
-                        size={mobile ? 22 : 21}
+                        size={21}
+                        strokeWidth={2}
                     />
 
-                    {!mobile && (
-                        <span className="
-                            text-[11px]
-                            font-medium
-                            leading-tight
-                            text-center
-                        ">
-                            Dashboard
-                        </span>
-                    )}
+                    <span className="
+                        text-[11px]
+                        font-medium
+                        leading-tight
+                        text-center
+                    ">
+                        Dashboard
+                    </span>
 
                 </Link>
             );
@@ -292,6 +270,35 @@ function Navbar() {
         }
 
         return null;
+
+    };
+
+
+    /* =========================================================
+       PROFILE DROPDOWN DASHBOARD NAVIGATION
+       Used ONLY on mobile.
+    ========================================================= */
+
+    const goToDashboard = () => {
+
+        setProfileOpen(false);
+
+        if (user?.role === "customer") {
+
+            navigate("/my-bookings");
+
+        } else if (user?.role === "provider") {
+
+            navigate("/provider-dashboard");
+
+        } else if (
+            user?.role === "admin" ||
+            user?.role === "Admin"
+        ) {
+
+            navigate("/admin-dashboard");
+
+        }
 
     };
 
@@ -308,27 +315,27 @@ function Navbar() {
 
             <div className="relative">
 
-                {/* ================================================= */}
-                {/* MAIN NAVBAR */}
-                {/* ================================================= */}
+                {/* =================================================
+                    MAIN NAVBAR
+                ================================================= */}
 
                 <div className="
-    max-w-7xl
-    mx-auto
-    px-3
-    sm:px-5
-    lg:px-8
-    h-[70px]
-    sm:h-[80px]
-    lg:h-[92px]
-    flex
-    items-center
-">
+                    max-w-7xl
+                    mx-auto
+                    px-3
+                    sm:px-5
+                    lg:px-8
+                    h-[70px]
+                    sm:h-[80px]
+                    lg:h-[92px]
+                    flex
+                    items-center
+                ">
 
 
-                    {/* ================================================= */}
-                    {/* LOGO */}
-                    {/* ================================================= */}
+                    {/* =================================================
+                        LOGO
+                    ================================================= */}
 
                     <Link
                         to="/"
@@ -418,20 +425,20 @@ function Navbar() {
                     </Link>
 
 
-                    {/* ================================================= */}
-                    {/* DESKTOP NAVIGATION */}
-                    {/* ================================================= */}
+                    {/* =================================================
+                        DESKTOP NAVIGATION
+                    ================================================= */}
 
-                {user && (
-    <div className="
-        hidden
-        md:flex
-        items-center
-        gap-3
-        lg:gap-4
-        ml-170
-    ">
+                    {user && (
 
+                        <div className="
+                            hidden
+                            md:flex
+                            items-center
+                            gap-3
+                            lg:gap-4
+                            ml-170
+                        ">
 
                             {/* HOME */}
 
@@ -476,20 +483,23 @@ function Navbar() {
                     )}
 
 
-                    {/* ================================================= */}
-                    {/* RIGHT SIDE */}
-                    {/* ================================================= */}
-<div className="
-    flex
-    items-center
-    gap-3
-    sm:gap-3
-    lg:gap-4
-    ml-2
-">
-                        {/* ================================================= */}
-                        {/* MOBILE HOME */}
-                        {/* ================================================= */}
+                    {/* =================================================
+                        RIGHT SIDE
+                    ================================================= */}
+
+                    <div className="
+                        ml-auto
+                        flex
+                        items-center
+                        gap-3
+                        sm:gap-3
+                        lg:gap-4
+                    ">
+
+
+                        {/* =================================================
+                            MOBILE HOME
+                        ================================================= */}
 
                         {user && (
 
@@ -521,11 +531,9 @@ function Navbar() {
                         )}
 
 
-
-
-                        {/* ================================================= */}
-                        {/* DESKTOP REGISTER */}
-                        {/* ================================================= */}
+                        {/* =================================================
+                            REGISTER
+                        ================================================= */}
 
                         {!user && (
 
@@ -552,9 +560,9 @@ function Navbar() {
                         )}
 
 
-                        {/* ================================================= */}
-                        {/* LOGIN */}
-                        {/* ================================================= */}
+                        {/* =================================================
+                            LOGIN
+                        ================================================= */}
 
                         {!user && (
 
@@ -583,9 +591,9 @@ function Navbar() {
                         )}
 
 
-                        {/* ================================================= */}
-                        {/* NOTIFICATION */}
-                        {/* ================================================= */}
+                        {/* =================================================
+                            NOTIFICATION
+                        ================================================= */}
 
                         {user && (
 
@@ -648,9 +656,9 @@ function Navbar() {
                         )}
 
 
-                        {/* ================================================= */}
-                        {/* PROFILE */}
-                        {/* ================================================= */}
+                        {/* =================================================
+                            PROFILE
+                        ================================================= */}
 
                         {user && (
 
@@ -671,6 +679,7 @@ function Navbar() {
                                         gap-1
                                         sm:gap-2
                                     "
+                                    aria-label="Open profile menu"
                                 >
 
                                     <div className="
@@ -746,13 +755,15 @@ function Navbar() {
                                 </button>
 
 
-                                {/* ================================================= */}
-                                {/* PROFILE DROPDOWN */}
-                                {/* ================================================= */}
+                                {/* =================================================
+                                    PROFILE DROPDOWN
+                                ================================================= */}
 
                                 {profileOpen && (
 
                                     <>
+
+                                        {/* BACKDROP */}
 
                                         <div
                                             className="
@@ -765,6 +776,8 @@ function Navbar() {
                                             }
                                         />
 
+
+                                        {/* DROPDOWN */}
 
                                         <div className="
                                             absolute
@@ -784,7 +797,9 @@ function Navbar() {
                                         ">
 
 
-                                            {/* USER INFO */}
+                                            {/* =================================================
+                                                USER INFO
+                                            ================================================= */}
 
                                             <div className="
                                                 px-4
@@ -870,48 +885,22 @@ function Navbar() {
                                             </div>
 
 
-                                            {/* ================================================= */}
-                                            {/* DASHBOARD INSIDE PROFILE */}
-                                            {/* ================================================= */}
+                                            {/* =================================================
+                                                DASHBOARD / MY BOOKINGS
+
+                                                IMPORTANT:
+                                                Hidden on desktop.
+                                                Visible only on mobile.
+
+                                                This prevents duplicate Dashboard
+                                                because desktop already has Dashboard
+                                                in the main navbar.
+                                            ================================================= */}
 
                                             <button
-                                                onClick={() => {
-
-                                                    setProfileOpen(false);
-
-                                                    if (
-                                                        user?.role ===
-                                                        "customer"
-                                                    ) {
-
-                                                        navigate(
-                                                            "/my-bookings"
-                                                        );
-
-                                                    } else if (
-                                                        user?.role ===
-                                                        "provider"
-                                                    ) {
-
-                                                        navigate(
-                                                            "/provider-dashboard"
-                                                        );
-
-                                                    } else if (
-                                                        user?.role ===
-                                                            "admin" ||
-                                                        user?.role ===
-                                                            "Admin"
-                                                    ) {
-
-                                                        navigate(
-                                                            "/admin-dashboard"
-                                                        );
-
-                                                    }
-
-                                                }}
+                                                onClick={goToDashboard}
                                                 className="
+                                                    md:hidden
                                                     w-full
                                                     px-4
                                                     sm:px-5
@@ -988,9 +977,15 @@ function Navbar() {
                                             </button>
 
 
-                                            {/* DIVIDER */}
+                                            {/* =================================================
+                                                DIVIDER
+
+                                                Only show when mobile dashboard
+                                                exists.
+                                            ================================================= */}
 
                                             <div className="
+                                                md:hidden
                                                 h-px
                                                 bg-gray-100
                                                 mx-4
@@ -998,9 +993,9 @@ function Navbar() {
                                             " />
 
 
-                                            {/* ================================================= */}
-                                            {/* MY PROFILE */}
-                                            {/* ================================================= */}
+                                            {/* =================================================
+                                                MY PROFILE
+                                            ================================================= */}
 
                                             <button
                                                 onClick={() => {
@@ -1049,6 +1044,7 @@ function Navbar() {
 
                                                 </div>
 
+
                                                 <span className="
                                                     font-medium
                                                     text-gray-800
@@ -1059,7 +1055,9 @@ function Navbar() {
                                             </button>
 
 
-                                            {/* DIVIDER */}
+                                            {/* =================================================
+                                                DIVIDER
+                                            ================================================= */}
 
                                             <div className="
                                                 h-px
@@ -1069,9 +1067,9 @@ function Navbar() {
                                             " />
 
 
-                                            {/* ================================================= */}
-                                            {/* LOGOUT */}
-                                            {/* ================================================= */}
+                                            {/* =================================================
+                                                LOGOUT
+                                            ================================================= */}
 
                                             <button
                                                 onClick={logout}
@@ -1112,6 +1110,7 @@ function Navbar() {
 
                                                 </div>
 
+
                                                 <span className="
                                                     font-medium
                                                     text-red-600
@@ -1136,9 +1135,9 @@ function Navbar() {
                 </div>
 
 
-                {/* ================================================= */}
-                {/* CURVED BOTTOM STRIP */}
-                {/* ================================================= */}
+                {/* =================================================
+                    CURVED BOTTOM STRIP
+                ================================================= */}
 
                 <div className="
                     absolute

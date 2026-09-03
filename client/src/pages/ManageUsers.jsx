@@ -14,13 +14,19 @@ import {
     FaTrash,
     FaUserShield,
     FaUserTie,
-    FaUser
+    FaUser,
+    FaMapMarkerAlt,
+    FaPhone,
+    FaEnvelope,
+    FaDatabase,
+    FaUserCheck
 } from "react-icons/fa";
 
 function ManageUsers() {
 
     const [users, setUsers] = useState([]);
     const [search, setSearch] = useState("");
+    const [loading, setLoading] = useState(true);
 
     const currentUser = JSON.parse(localStorage.getItem("user"));
 
@@ -32,19 +38,24 @@ function ManageUsers() {
 
         try {
 
+            setLoading(true);
+
             const data = await getAllUsers();
 
             setUsers(data);
 
-        }
-
-        catch (error) {
+        } catch (error) {
 
             console.log(error);
+
+        } finally {
+
+            setLoading(false);
 
         }
 
     };
+
 
     const handleDelete = async (id) => {
 
@@ -70,9 +81,7 @@ function ManageUsers() {
 
             fetchUsers();
 
-        }
-
-        catch (error) {
+        } catch (error) {
 
             alert(
                 error.response?.data?.message ||
@@ -83,15 +92,24 @@ function ManageUsers() {
 
     };
 
+
     const filteredUsers = users.filter((user) =>
 
-    (user.name || "").toLowerCase().includes(search.toLowerCase()) ||
+        (user.name || "")
+            .toLowerCase()
+            .includes(search.toLowerCase()) ||
 
-    (user.email || "").toLowerCase().includes(search.toLowerCase()) ||
+        (user.email || "")
+            .toLowerCase()
+            .includes(search.toLowerCase()) ||
 
-    (user.role || "").toLowerCase().includes(search.toLowerCase())
+        (user.role || "")
+            .toLowerCase()
+            .includes(search.toLowerCase())
 
-);
+    );
+
+
     const totalUsers = users.length;
 
     const customers = users.filter(
@@ -108,240 +126,237 @@ function ManageUsers() {
             u.role === "Admin"
     ).length;
 
-return (
 
-    <>
+    const stats = [
 
-        <Navbar />
+        {
+            title: "Total Users",
+            value: totalUsers,
+            label: "All registered accounts",
+            icon: FaUsers,
+            iconBg: "bg-indigo-50",
+            iconColor: "text-[#3525cd]"
+        },
 
-        {/* Hero */}
+        {
+            title: "Customers",
+            value: customers,
+            label: "Service customers",
+            icon: FaUser,
+            iconBg: "bg-emerald-50",
+            iconColor: "text-emerald-600"
+        },
 
-        <section className="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 text-white">
+        {
+            title: "Providers",
+            value: providers,
+            label: "Service professionals",
+            icon: FaUserTie,
+            iconBg: "bg-amber-50",
+            iconColor: "text-amber-600"
+        },
 
-            <div className="max-w-7xl mx-auto px-6 py-14">
+        {
+            title: "Admins",
+            value: admins,
+            label: "Platform administrators",
+            icon: FaUserShield,
+            iconBg: "bg-purple-50",
+            iconColor: "text-purple-600"
+        }
 
-                <h1 className="text-5xl font-bold">
+    ];
 
-                    Manage Users
 
-                </h1>
+    const getRoleStyle = (role) => {
 
-                <p className="text-xl text-blue-100 mt-4">
+        switch (role?.toLowerCase()) {
 
-                    View, search and manage all registered users.
+            case "admin":
+                return {
+                    bg: "bg-purple-50",
+                    text: "text-purple-700",
+                    icon: FaUserShield
+                };
 
-                </p>
+            case "provider":
+                return {
+                    bg: "bg-amber-50",
+                    text: "text-amber-700",
+                    icon: FaUserTie
+                };
 
-            </div>
+            default:
+                return {
+                    bg: "bg-indigo-50",
+                    text: "text-[#3525cd]",
+                    icon: FaUser
+                };
 
-        </section>
+        }
 
-        <div className="max-w-7xl mx-auto px-6 py-10">
+    };
 
-            {/* Statistics */}
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+    return (
 
-                <div className="bg-white rounded-3xl shadow-lg p-6">
+        <>
 
-                    <FaUsers className="text-5xl text-blue-600" />
+            <Navbar />
 
-                    <h2 className="text-4xl font-bold mt-5">
+            <main className="min-h-screen bg-[#fcf8ff]">
 
-                        {totalUsers}
+                {/* =====================================================
+                    HERO
+                ====================================================== */}
 
-                    </h2>
+                <section className="relative overflow-hidden bg-[#3525cd] text-white">
 
-                    <p className="text-gray-500">
+                    <div className="absolute -right-20 -top-24 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
 
-                        Total Users
+                    <div className="absolute -bottom-32 left-1/3 h-80 w-80 rounded-full bg-purple-400/20 blur-3xl" />
 
-                    </p>
+                    <div className="relative max-w-7xl mx-auto px-5 sm:px-6 py-11 sm:py-14">
 
-                </div>
+                        <div className="flex items-center gap-3 text-indigo-200 text-sm font-semibold">
 
-                <div className="bg-white rounded-3xl shadow-lg p-6">
+                            <FaUsers />
 
-                    <FaUser className="text-5xl text-green-600" />
+                            User Management
 
-                    <h2 className="text-4xl font-bold mt-5">
+                        </div>
 
-                        {customers}
+                        <h1 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
 
-                    </h2>
+                            Manage Users
 
-                    <p className="text-gray-500">
+                        </h1>
 
-                        Customers
+                        <p className="mt-4 max-w-2xl text-sm sm:text-base lg:text-lg leading-7 text-indigo-100">
 
-                    </p>
+                            View, search and manage all registered customers,
 
-                </div>
+                            providers and administrators across MultiServe.
 
-                <div className="bg-white rounded-3xl shadow-lg p-6">
+                        </p>
 
-                    <FaUserTie className="text-5xl text-yellow-500" />
+                    </div>
 
-                    <h2 className="text-4xl font-bold mt-5">
+                </section>
 
-                        {providers}
 
-                    </h2>
+                {/* =====================================================
+                    MAIN CONTENT
+                ====================================================== */}
 
-                    <p className="text-gray-500">
+                <div className="max-w-7xl mx-auto px-5 sm:px-6 py-8 sm:py-10">
 
-                        Providers
 
-                    </p>
+                    {/* =================================================
+                        STATISTICS
+                    ================================================== */}
 
-                </div>
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
 
-                <div className="bg-white rounded-3xl shadow-lg p-6">
+                        {stats.map((stat) => {
 
-                    <FaUserShield className="text-5xl text-purple-600" />
+                            const Icon = stat.icon;
 
-                    <h2 className="text-4xl font-bold mt-5">
+                            return (
 
-                        {admins}
+                                <div
+                                    key={stat.title}
+                                    className="rounded-2xl border border-slate-100 bg-white p-5 sm:p-6 shadow-[0_8px_30px_rgba(30,27,75,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(30,27,75,0.08)]"
+                                >
 
-                    </h2>
+                                    <div className="flex items-start justify-between">
 
-                    <p className="text-gray-500">
+                                        <div
+                                            className={`flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-xl ${stat.iconBg} ${stat.iconColor}`}
+                                        >
 
-                        Admins
-
-                    </p>
-
-                </div>
-
-            </div>
-
-            {/* Search */}
-
-            <div className="relative mb-10">
-
-                <FaSearch className="absolute left-5 top-4 text-gray-400 text-lg" />
-
-                <input
-
-                    type="text"
-
-                    placeholder="Search by Name, Email or Role..."
-
-                    value={search}
-
-                    onChange={(e) => setSearch(e.target.value)}
-
-                    className="w-full bg-white border rounded-2xl pl-14 pr-6 py-4 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-
-                />
-
-            </div>
-                        {/* Users List */}
-
-            <div className="grid gap-6">
-
-                {
-
-                    filteredUsers.map((user) => (
-
-                        <div
-                            key={user._id}
-                            className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition duration-300 p-8"
-                        >
-
-                            <div className="flex flex-col lg:flex-row justify-between gap-8">
-
-                                {/* Left */}
-
-                                <div className="flex gap-6">
-
-                                    <img
-                                        src={
-                                            user.profileImage ||
-                                            "https://placehold.co/120x120"
-                                        }
-                                        alt={user.name}
-                                        className="w-24 h-24 rounded-full object-cover border-4 border-blue-100"
-                                    />
-
-                                    <div>
-
-                                        <h2 className="text-2xl font-bold">
-
-                                            {user.name}
-
-                                        </h2>
-
-                                        <p className="text-gray-500 mt-1">
-
-                                            {user.email}
-
-                                        </p>
-
-                                        <div className="flex flex-wrap gap-4 mt-5">
-
-                                            <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full">
-
-                                                📞 {user.phone}
-
-                                            </span>
-
-                                            <span className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full capitalize">
-
-                                                👤 {user.role}
-
-                                            </span>
-
-                                            {
-
-                                                user.city &&
-
-                                                <span className="bg-green-100 text-green-700 px-4 py-2 rounded-full">
-
-                                                    📍 {user.city}
-
-                                                </span>
-
-                                            }
+                                            <Icon />
 
                                         </div>
 
+                                        <FaDatabase className="hidden sm:block text-slate-200" />
+
                                     </div>
+
+                                    <p className="mt-5 text-xs sm:text-sm font-medium text-slate-500">
+
+                                        {stat.title}
+
+                                    </p>
+
+                                    <h2 className="mt-1 text-2xl sm:text-3xl font-extrabold text-[#1b1b24]">
+
+                                        {stat.value}
+
+                                    </h2>
+
+                                    <p className="mt-1 text-xs sm:text-sm text-slate-400">
+
+                                        {stat.label}
+
+                                    </p>
 
                                 </div>
 
-                                {/* Right */}
+                            );
 
-                                <div className="flex flex-col justify-between items-end">
+                        })}
 
-                                    <button
+                    </div>
 
-                                        onClick={() => handleDelete(user._id)}
 
-                                        disabled={user._id === currentUser._id}
+                    {/* =================================================
+                        SEARCH
+                    ================================================== */}
 
-                                        className={`px-6 py-3 rounded-xl font-semibold transition ${
-                                            user._id === currentUser._id
-                                                ? "bg-gray-300 cursor-not-allowed"
-                                                : "bg-red-600 hover:bg-red-700 text-white"
-                                        }`}
+                    <section className="mt-9 sm:mt-11">
 
-                                    >
+                        <div className="rounded-3xl border border-slate-100 bg-white p-5 sm:p-6 shadow-[0_8px_30px_rgba(30,27,75,0.05)]">
 
-                                        {user._id === currentUser._id
+                            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
 
-                                            ? "Current Admin"
+                                <div>
 
-                                            : "Delete User"}
+                                    <p className="text-xs font-bold uppercase tracking-wider text-[#3525cd]">
 
-                                    </button>
-
-                                    <p className="text-sm text-gray-400 mt-5">
-
-                                        ID: {user._id}
+                                        User directory
 
                                     </p>
+
+                                    <h2 className="mt-1 text-xl sm:text-2xl font-extrabold text-[#1b1b24]">
+
+                                        All Users
+
+                                    </h2>
+
+                                    <p className="mt-1 text-sm text-slate-500">
+
+                                        {search
+                                            ? `${filteredUsers.length} matching users`
+                                            : `${totalUsers} registered users`
+                                        }
+
+                                    </p>
+
+                                </div>
+
+
+                                <div className="relative w-full lg:max-w-md">
+
+                                    <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+
+                                    <input
+                                        type="text"
+                                        placeholder="Search name, email or role..."
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        className="w-full rounded-xl border border-slate-200 bg-[#fcf8ff] py-3.5 pl-11 pr-4 text-sm text-[#1b1b24] outline-none transition focus:border-[#3525cd] focus:ring-4 focus:ring-indigo-100"
+                                    />
 
                                 </div>
 
@@ -349,19 +364,291 @@ return (
 
                         </div>
 
-                    ))
+                    </section>
 
-                }
 
-            </div>
+                    {/* =================================================
+                        USERS
+                    ================================================== */}
 
-        </div>
+                    <section className="mt-6">
 
-        <Footer />
+                        {loading ? (
 
-    </>
+                            <div className="grid gap-4">
 
-);
+                                {[1, 2, 3, 4].map((item) => (
+
+                                    <div
+                                        key={item}
+                                        className="rounded-3xl border border-slate-100 bg-white p-6 animate-pulse"
+                                    >
+
+                                        <div className="flex items-center gap-5">
+
+                                            <div className="h-16 w-16 rounded-2xl bg-slate-100" />
+
+                                            <div className="flex-1">
+
+                                                <div className="h-5 w-40 rounded bg-slate-100" />
+
+                                                <div className="mt-3 h-4 w-56 rounded bg-slate-100" />
+
+                                                <div className="mt-4 h-8 w-72 rounded bg-slate-100" />
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                ))}
+
+                            </div>
+
+                        ) : filteredUsers.length === 0 ? (
+
+                            <div className="rounded-3xl border border-dashed border-slate-200 bg-white px-6 py-14 text-center">
+
+                                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-50 text-[#3525cd]">
+
+                                    <FaSearch className="text-xl" />
+
+                                </div>
+
+                                <h3 className="mt-5 text-xl font-bold text-[#1b1b24]">
+
+                                    No users found
+
+                                </h3>
+
+                                <p className="mt-2 text-sm text-slate-500">
+
+                                    Try searching with a different name,
+
+                                    email or role.
+
+                                </p>
+
+                            </div>
+
+                        ) : (
+
+                            <div className="grid gap-4">
+
+                                {filteredUsers.map((user) => {
+
+                                    const roleStyle = getRoleStyle(user.role);
+
+                                    const RoleIcon = roleStyle.icon;
+
+                                    const isCurrentAdmin =
+                                        user._id === currentUser._id;
+
+                                    return (
+
+                                        <article
+                                            key={user._id}
+                                            className="group rounded-3xl border border-slate-100 bg-white p-5 sm:p-6 lg:p-7 shadow-[0_8px_30px_rgba(30,27,75,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_45px_rgba(30,27,75,0.09)]"
+                                        >
+
+                                            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+
+
+                                                {/* USER INFO */}
+
+                                                <div className="flex items-start gap-4 sm:gap-5 min-w-0">
+
+                                                    <div className="relative shrink-0">
+
+                                                        <img
+                                                            src={
+                                                                user.profileImage ||
+                                                                "https://placehold.co/120x120"
+                                                            }
+                                                            alt={user.name || "User"}
+                                                            className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl object-cover border border-slate-100 bg-slate-50"
+                                                        />
+
+                                                        {isCurrentAdmin && (
+
+                                                            <div className="absolute -right-1 -bottom-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-emerald-500 text-white">
+
+                                                                <FaUserCheck className="text-[10px]" />
+
+                                                            </div>
+
+                                                        )}
+
+                                                    </div>
+
+
+                                                    <div className="min-w-0 flex-1">
+
+                                                        <div className="flex flex-wrap items-center gap-2">
+
+                                                            <h3 className="truncate text-lg sm:text-xl font-bold text-[#1b1b24]">
+
+                                                                {user.name || "Unnamed User"}
+
+                                                            </h3>
+
+                                                            {isCurrentAdmin && (
+
+                                                                <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-emerald-700">
+
+                                                                    You
+
+                                                                </span>
+
+                                                            )}
+
+                                                        </div>
+
+
+                                                        <div className="mt-1 flex items-center gap-2 text-sm text-slate-500 break-all">
+
+                                                            <FaEnvelope className="shrink-0 text-xs text-slate-400" />
+
+                                                            {user.email || "No email"}
+
+                                                        </div>
+
+
+                                                        <div className="mt-4 flex flex-wrap gap-2">
+
+                                                            {user.phone && (
+
+                                                                <span className="inline-flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 text-xs font-medium text-slate-600">
+
+                                                                    <FaPhone className="text-[10px]" />
+
+                                                                    {user.phone}
+
+                                                                </span>
+
+                                                            )}
+
+
+                                                            <span
+                                                                className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold capitalize ${roleStyle.bg} ${roleStyle.text}`}
+                                                            >
+
+                                                                <RoleIcon className="text-[10px]" />
+
+                                                                {user.role || "customer"}
+
+                                                            </span>
+
+
+                                                            {user.city && (
+
+                                                                <span className="inline-flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 text-xs font-medium text-slate-600">
+
+                                                                    <FaMapMarkerAlt className="text-[10px]" />
+
+                                                                    {user.city}
+
+                                                                </span>
+
+                                                            )}
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                {/* ACTION */}
+
+                                                <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row lg:items-end xl:items-center gap-3 lg:min-w-[190px]">
+
+                                                    <button
+                                                        onClick={() => handleDelete(user._id)}
+                                                        disabled={isCurrentAdmin}
+                                                        className={`inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold transition-all duration-300 ${
+                                                            isCurrentAdmin
+                                                                ? "cursor-not-allowed bg-slate-100 text-slate-400"
+                                                                : "bg-red-50 text-red-600 hover:bg-red-600 hover:text-white"
+                                                        }`}
+                                                    >
+
+                                                        <FaTrash className="text-xs" />
+
+                                                        {isCurrentAdmin
+                                                            ? "Current Admin"
+                                                            : "Delete User"
+                                                        }
+
+                                                    </button>
+
+
+                                                    <p className="max-w-full truncate text-[10px] text-slate-400 lg:max-w-[190px]">
+
+                                                        ID: {user._id}
+
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+                                        </article>
+
+                                    );
+
+                                })}
+
+                            </div>
+
+                        )}
+
+                    </section>
+
+
+                    {/* =================================================
+                        FOOTER INFO
+                    ================================================== */}
+
+                    <div className="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl border border-indigo-100 bg-[#f5f2ff] px-5 py-4">
+
+                        <div className="flex items-center gap-3">
+
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white text-[#3525cd]">
+
+                                <FaUserShield className="text-sm" />
+
+                            </div>
+
+                            <p className="text-xs sm:text-sm text-slate-600">
+
+                                Admin actions are protected and cannot remove
+
+                                the currently signed-in admin.
+
+                            </p>
+
+                        </div>
+
+                        <span className="text-xs font-bold text-[#3525cd]">
+
+                            {filteredUsers.length} users displayed
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+
+            <Footer />
+
+        </>
+
+    );
 
 }
 

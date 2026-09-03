@@ -1,160 +1,481 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
+import {
+    ArrowLeft,
+    ArrowRight,
+    BadgeCheck,
+    BriefcaseBusiness,
+    CalendarCheck,
+    CheckCircle2,
+    Clock3,
+    MapPin,
+    MessageSquare,
+    ShieldCheck,
+    Star,
+    Wallet,
+} from "lucide-react";
+
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 import { getProviderById } from "../api/providerApi";
 import { getProviderReviews } from "../api/reviewApi";
 
-import {
-    FaMapMarkerAlt,
-    FaBriefcase,
-    FaStar,
-    FaRupeeSign,
-    FaCheckCircle
-} from "react-icons/fa";
-
 function ProviderDetails() {
-
     const { id } = useParams();
-
     const navigate = useNavigate();
 
     const [provider, setProvider] = useState(null);
-
     const [reviews, setReviews] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-
         fetchProvider();
-
         fetchReviews();
-
-    }, []);
+    }, [id]);
 
     const fetchProvider = async () => {
-
         try {
+            setLoading(true);
 
             const data = await getProviderById(id);
-
             setProvider(data);
-
+        } catch (error) {
+            console.log("Provider loading error:", error);
+            setProvider(null);
+        } finally {
+            setLoading(false);
         }
-
-        catch (error) {
-
-            console.log(error);
-
-        }
-
     };
 
     const fetchReviews = async () => {
-
         try {
-
             const data = await getProviderReviews(id);
-
-            setReviews(data);
-
+            setReviews(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.log("Review loading error:", error);
+            setReviews([]);
         }
-
-        catch (error) {
-
-            console.log(error);
-
-        }
-
     };
 
     const averageRating =
         reviews.length > 0
             ? (
                   reviews.reduce(
-                      (sum, item) => sum + item.rating,
+                      (sum, item) => sum + Number(item.rating || 0),
                       0
                   ) / reviews.length
               ).toFixed(1)
             : "0.0";
 
-    if (!provider) {
+    /*
+    |--------------------------------------------------------------------------
+    | PROFILE IMAGE
+    |--------------------------------------------------------------------------
+    */
 
+    const profileImage =
+        provider?.profileImage ||
+        provider?.image ||
+        provider?.photo ||
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(
+            provider?.name || "Professional"
+        )}&background=EEF2FF&color=4338CA&size=400`;
+
+    /*
+    |--------------------------------------------------------------------------
+    | LOADING
+    |--------------------------------------------------------------------------
+    */
+
+    if (loading) {
         return (
-            <>
+            <div className="min-h-screen bg-[#fcf8ff]">
                 <Navbar />
 
-                <div className="text-center py-32">
+                <main className="mx-auto max-w-7xl px-5 py-12 sm:px-6 lg:px-8">
+                    <div className="animate-pulse">
 
-                    <h1 className="text-3xl font-bold">
+                        <div className="h-5 w-28 rounded bg-slate-200" />
 
-                        Loading...
+                        <div className="mt-8 overflow-hidden rounded-[30px] bg-white">
+                            <div className="h-80 bg-slate-200" />
 
-                    </h1>
+                            <div className="space-y-4 p-8">
+                                <div className="h-8 w-64 rounded bg-slate-200" />
+                                <div className="h-5 w-40 rounded bg-slate-200" />
+                                <div className="h-20 w-full rounded bg-slate-200" />
+                            </div>
+                        </div>
+                    </div>
+                </main>
 
-                </div>
-
-            </>
+                <Footer />
+            </div>
         );
-
     }
 
-    return (
+    /*
+    |--------------------------------------------------------------------------
+    | PROVIDER NOT FOUND
+    |--------------------------------------------------------------------------
+    */
 
-        <>
+    if (!provider) {
+        return (
+            <div className="min-h-screen bg-[#fcf8ff]">
+                <Navbar />
+
+                <main className="flex min-h-[65vh] items-center justify-center px-5">
+                    <div className="w-full max-w-lg rounded-[28px] border border-slate-200 bg-white p-10 text-center shadow-sm">
+
+                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+                            <ShieldCheck size={30} />
+                        </div>
+
+                        <h1 className="mt-6 text-2xl font-bold text-slate-900">
+                            Professional Not Found
+                        </h1>
+
+                        <p className="mt-3 text-sm leading-6 text-slate-500">
+                            We couldn't find this service professional.
+                            Please return to the providers page and try again.
+                        </p>
+
+                        <button
+                            type="button"
+                            onClick={() => navigate("/providers")}
+                            className="
+                                mt-7
+                                inline-flex
+                                items-center
+                                gap-2
+                                rounded-xl
+                                bg-slate-950
+                                px-5
+                                py-3
+                                text-sm
+                                font-semibold
+                                text-white
+                                transition
+                                hover:bg-indigo-600
+                            "
+                        >
+                            <ArrowLeft size={16} />
+                            Browse Providers
+                        </button>
+
+                    </div>
+                </main>
+
+                <Footer />
+            </div>
+        );
+    }
+
+    const providerName = provider?.name || "Professional";
+    const serviceName = provider?.service || "Home Service";
+    const city = provider?.city || "Available nearby";
+    const experience = provider?.experience ?? "—";
+    const price = provider?.price ?? "—";
+
+    return (
+        <div className="min-h-screen bg-[#fcf8ff] text-slate-900">
 
             <Navbar />
 
-            {/* Hero */}
+            {/* =========================================================
+                PAGE
+            ========================================================= */}
 
-            <section className="bg-gradient-to-r from-blue-700 to-indigo-700 text-white">
+            <main>
 
-                <div className="max-w-7xl mx-auto px-6 py-16">
+                {/* =====================================================
+                    HERO PROFILE
+                ===================================================== */}
 
-                    <div className="flex flex-col lg:flex-row items-center gap-12">
+                <section className="relative overflow-hidden bg-gradient-to-br from-indigo-950 via-indigo-900 to-violet-900 text-white">
 
-                        <img
+                    {/* Background glow */}
 
-                            src="https://placehold.co/250x250"
+                    <div
+                        className="
+                            pointer-events-none
+                            absolute
+                            -right-32
+                            -top-32
+                            h-96
+                            w-96
+                            rounded-full
+                            bg-indigo-500/20
+                            blur-3xl
+                        "
+                    />
 
-                            alt={provider.name}
+                    <div
+                        className="
+                            pointer-events-none
+                            absolute
+                            -bottom-40
+                            left-1/3
+                            h-96
+                            w-96
+                            rounded-full
+                            bg-violet-500/20
+                            blur-3xl
+                        "
+                    />
 
-                            className="w-60 h-60 rounded-full border-4 border-white shadow-2xl"
+                    <div className="relative mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-8">
 
-                        />
+                        {/* Back */}
 
-                        <div className="flex-1">
+                        <button
+                            type="button"
+                            onClick={() => navigate(-1)}
+                            className="
+                                mb-8
+                                inline-flex
+                                items-center
+                                gap-2
+                                rounded-xl
+                                border
+                                border-white/10
+                                bg-white/10
+                                px-4
+                                py-2.5
+                                text-sm
+                                font-medium
+                                text-indigo-100
+                                backdrop-blur-sm
+                                transition
+                                hover:bg-white/15
+                                hover:text-white
+                            "
+                        >
+                            <ArrowLeft size={16} />
+                            Back to Providers
+                        </button>
 
-                            <h1 className="text-5xl font-bold">
 
-                                {provider.name}
+                        {/* Profile */}
 
-                            </h1>
+                        <div
+                            className="
+                                flex
+                                flex-col
+                                gap-8
+                                pb-10
+                                md:flex-row
+                                md:items-center
+                                lg:gap-12
+                            "
+                        >
 
-                            <p className="text-2xl mt-3 text-blue-100">
+                            {/* =================================================
+                                IMAGE
+                            ================================================= */}
 
-                                {provider.service}
+                            <div className="relative shrink-0 self-center md:self-auto">
 
-                            </p>
-
-                            <div className="flex flex-wrap gap-5 mt-8">
-
-                                <div className="bg-white text-gray-900 rounded-xl px-5 py-3">
-
-                                    ⭐ {averageRating} Rating
-
+                                <div
+                                    className="
+                                        rounded-full
+                                        bg-white/10
+                                        p-2
+                                        shadow-2xl
+                                        backdrop-blur-sm
+                                    "
+                                >
+                                    <img
+                                        src={profileImage}
+                                        alt={providerName}
+                                        className="
+                                            h-36
+                                            w-36
+                                            rounded-full
+                                            border-4
+                                            border-white/90
+                                            bg-white
+                                            object-cover
+                                            shadow-2xl
+                                            sm:h-44
+                                            sm:w-44
+                                            lg:h-52
+                                            lg:w-52
+                                        "
+                                    />
                                 </div>
 
-                                <div className="bg-white text-gray-900 rounded-xl px-5 py-3">
-
-                                    {reviews.length} Reviews
-
+                                <div
+                                    className="
+                                        absolute
+                                        bottom-2
+                                        right-2
+                                        flex
+                                        h-11
+                                        w-11
+                                        items-center
+                                        justify-center
+                                        rounded-full
+                                        border-4
+                                        border-indigo-900
+                                        bg-white
+                                        shadow-lg
+                                    "
+                                >
+                                    <BadgeCheck
+                                        size={22}
+                                        className="text-indigo-600"
+                                    />
                                 </div>
 
-                                <div className="bg-white text-gray-900 rounded-xl px-5 py-3">
+                            </div>
+
+
+                            {/* =================================================
+                                INFORMATION
+                            ================================================= */}
+
+                            <div className="min-w-0 flex-1 text-center md:text-left">
+
+                                <div
+                                    className="
+                                        inline-flex
+                                        items-center
+                                        gap-2
+                                        rounded-full
+                                        border
+                                        border-white/10
+                                        bg-white/10
+                                        px-3
+                                        py-1.5
+                                        text-xs
+                                        font-semibold
+                                        text-indigo-100
+                                        backdrop-blur-sm
+                                    "
+                                >
+                                    <CheckCircle2
+                                        size={14}
+                                        className="text-emerald-300"
+                                    />
 
                                     Verified Professional
+                                </div>
+
+                                <h1
+                                    className="
+                                        mt-4
+                                        text-4xl
+                                        font-bold
+                                        tracking-[-0.04em]
+                                        sm:text-5xl
+                                        lg:text-6xl
+                                    "
+                                >
+                                    {providerName}
+                                </h1>
+
+                                <p
+                                    className="
+                                        mt-3
+                                        text-lg
+                                        font-medium
+                                        text-indigo-200
+                                        sm:text-xl
+                                    "
+                                >
+                                    {serviceName}
+                                </p>
+
+
+                                {/* Rating */}
+
+                                <div
+                                    className="
+                                        mt-6
+                                        flex
+                                        flex-wrap
+                                        items-center
+                                        justify-center
+                                        gap-3
+                                        md:justify-start
+                                    "
+                                >
+
+                                    <div
+                                        className="
+                                            inline-flex
+                                            items-center
+                                            gap-2
+                                            rounded-full
+                                            bg-white
+                                            px-4
+                                            py-2
+                                            text-slate-900
+                                        "
+                                    >
+                                        <Star
+                                            size={17}
+                                            fill="currentColor"
+                                            className="text-amber-500"
+                                        />
+
+                                        <span className="font-bold">
+                                            {averageRating}
+                                        </span>
+
+                                        <span className="text-sm text-slate-500">
+                                            Rating
+                                        </span>
+                                    </div>
+
+
+                                    <div
+                                        className="
+                                            inline-flex
+                                            items-center
+                                            gap-2
+                                            rounded-full
+                                            border
+                                            border-white/10
+                                            bg-white/10
+                                            px-4
+                                            py-2
+                                            text-sm
+                                            text-indigo-50
+                                        "
+                                    >
+                                        <MessageSquare size={16} />
+
+                                        {reviews.length}{" "}
+                                        {reviews.length === 1
+                                            ? "Review"
+                                            : "Reviews"}
+                                    </div>
+
+
+                                    <div
+                                        className="
+                                            inline-flex
+                                            items-center
+                                            gap-2
+                                            rounded-full
+                                            border
+                                            border-white/10
+                                            bg-white/10
+                                            px-4
+                                            py-2
+                                            text-sm
+                                            text-indigo-50
+                                        "
+                                    >
+                                        <MapPin size={16} />
+
+                                        {city}
+                                    </div>
 
                                 </div>
 
@@ -163,261 +484,740 @@ function ProviderDetails() {
                         </div>
 
                     </div>
+                </section>
 
-                </div>
 
-            </section>
+                {/* =========================================================
+                    CONTENT
+                ========================================================= */}
 
-            <div className="max-w-7xl mx-auto px-6 py-14">
+                <div
+                    className="
+                        mx-auto
+                        max-w-7xl
+                        px-5
+                        py-10
+                        sm:px-6
+                        sm:py-12
+                        lg:px-8
+                        lg:py-14
+                    "
+                >
 
-                <div className="grid lg:grid-cols-3 gap-10">
+                    <div className="grid gap-8 lg:grid-cols-3">
 
-                    {/* Left */}
+                        {/* =================================================
+                            LEFT CONTENT
+                        ================================================= */}
 
-                    <div className="lg:col-span-2">
+                        <div className="space-y-8 lg:col-span-2">
 
-                        <div className="bg-white rounded-3xl shadow-lg p-8">
+                            {/* =================================================
+                                ABOUT
+                            ================================================= */}
 
-                            <h2 className="text-3xl font-bold mb-8">
+                            <section
+                                className="
+                                    rounded-[28px]
+                                    border
+                                    border-slate-200/80
+                                    bg-white
+                                    p-6
+                                    shadow-[0_8px_30px_rgba(15,23,42,0.05)]
+                                    sm:p-8
+                                "
+                            >
 
-                                About Professional
+                                <div className="flex items-center gap-3">
 
-                            </h2>
+                                    <div
+                                        className="
+                                            flex
+                                            h-11
+                                            w-11
+                                            items-center
+                                            justify-center
+                                            rounded-xl
+                                            bg-indigo-50
+                                            text-indigo-600
+                                        "
+                                    >
+                                        <BriefcaseBusiness size={21} />
+                                    </div>
 
-                            <p className="text-gray-600 leading-8">
+                                    <div>
 
-                                {provider.about || "Experienced professional providing high-quality doorstep services with customer satisfaction."}
+                                        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-indigo-600">
+                                            Professional Profile
+                                        </p>
 
-                            </p>
+                                        <h2 className="mt-1 text-2xl font-bold tracking-tight text-slate-900">
+                                            About {providerName}
+                                        </h2>
 
-                        </div>
+                                    </div>
 
-                        <div className="bg-white rounded-3xl shadow-lg p-8 mt-8">
+                                </div>
 
-                            <h2 className="text-3xl font-bold mb-8">
 
-                                Customer Reviews
+                                <p
+                                    className="
+                                        mt-7
+                                        text-[15px]
+                                        leading-7
+                                        text-slate-600
+                                    "
+                                >
+                                    {provider.about ||
+                                        "Experienced professional providing high-quality doorstep services with a strong focus on reliability, customer satisfaction, and professional service."}
+                                </p>
 
-                            </h2>
 
-                            {
+                                {/* Quick details */}
 
-                                reviews.length === 0 ?
+                                <div
+                                    className="
+                                        mt-8
+                                        grid
+                                        gap-3
+                                        sm:grid-cols-2
+                                    "
+                                >
 
-                                    (
+                                    <div
+                                        className="
+                                            rounded-2xl
+                                            border
+                                            border-slate-100
+                                            bg-slate-50/70
+                                            p-5
+                                        "
+                                    >
 
-                                        <div className="text-gray-500">
+                                        <div className="flex items-center gap-3">
 
-                                            No Reviews Yet
+                                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
+                                                <BriefcaseBusiness size={18} />
+                                            </div>
+
+                                            <div>
+
+                                                <p className="text-xs text-slate-400">
+                                                    Experience
+                                                </p>
+
+                                                <p className="mt-1 font-bold text-slate-800">
+                                                    {experience} Years
+                                                </p>
+
+                                            </div>
 
                                         </div>
 
-                                    )
+                                    </div>
 
-                                    :
 
-                                    <div className="space-y-6">
+                                    <div
+                                        className="
+                                            rounded-2xl
+                                            border
+                                            border-slate-100
+                                            bg-slate-50/70
+                                            p-5
+                                        "
+                                    >
 
+                                        <div className="flex items-center gap-3">
+
+                                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-100 text-violet-600">
+                                                <MapPin size={18} />
+                                            </div>
+
+                                            <div className="min-w-0">
+
+                                                <p className="text-xs text-slate-400">
+                                                    Service Location
+                                                </p>
+
+                                                <p className="mt-1 truncate font-bold text-slate-800">
+                                                    {city}
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </section>
+
+
+                            {/* =================================================
+                                WHY CHOOSE
+                            ================================================= */}
+
+                            <section
+                                className="
+                                    rounded-[28px]
+                                    border
+                                    border-slate-200/80
+                                    bg-white
+                                    p-6
+                                    shadow-[0_8px_30px_rgba(15,23,42,0.05)]
+                                    sm:p-8
+                                "
+                            >
+
+                                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-indigo-600">
+                                    Why Choose This Professional
+                                </p>
+
+                                <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900">
+                                    Reliable service from start to finish
+                                </h2>
+
+                                <div
+                                    className="
+                                        mt-7
+                                        grid
+                                        gap-4
+                                        sm:grid-cols-2
+                                    "
+                                >
+
+                                    {[
                                         {
+                                            icon: ShieldCheck,
+                                            title: "Verified Professional",
+                                            text: "Identity and professional details are verified.",
+                                        },
+                                        {
+                                            icon: Star,
+                                            title: "Highly Rated",
+                                            text: "Customers can share ratings and service experiences.",
+                                        },
+                                        {
+                                            icon: Clock3,
+                                            title: "Quick Response",
+                                            text: "Professionals are available for timely service.",
+                                        },
+                                        {
+                                            icon: Wallet,
+                                            title: "Transparent Pricing",
+                                            text: "Clear starting pricing before booking.",
+                                        },
+                                    ].map((item) => {
+                                        const Icon = item.icon;
 
-                                            reviews.map((item) => (
+                                        return (
+                                            <div
+                                                key={item.title}
+                                                className="
+                                                    rounded-2xl
+                                                    border
+                                                    border-slate-100
+                                                    bg-slate-50/60
+                                                    p-5
+                                                "
+                                            >
+
+                                                <div className="flex items-start gap-3">
+
+                                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-indigo-600 shadow-sm">
+                                                        <Icon size={18} />
+                                                    </div>
+
+                                                    <div>
+
+                                                        <h3 className="font-bold text-slate-800">
+                                                            {item.title}
+                                                        </h3>
+
+                                                        <p className="mt-1 text-sm leading-6 text-slate-500">
+                                                            {item.text}
+                                                        </p>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        );
+                                    })}
+
+                                </div>
+
+                            </section>
+
+
+                            {/* =================================================
+                                REVIEWS
+                            ================================================= */}
+
+                            <section
+                                className="
+                                    rounded-[28px]
+                                    border
+                                    border-slate-200/80
+                                    bg-white
+                                    p-6
+                                    shadow-[0_8px_30px_rgba(15,23,42,0.05)]
+                                    sm:p-8
+                                "
+                            >
+
+                                <div
+                                    className="
+                                        flex
+                                        flex-col
+                                        gap-4
+                                        sm:flex-row
+                                        sm:items-end
+                                        sm:justify-between
+                                    "
+                                >
+
+                                    <div>
+
+                                        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-indigo-600">
+                                            Customer Feedback
+                                        </p>
+
+                                        <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900">
+                                            Customer Reviews
+                                        </h2>
+
+                                    </div>
+
+
+                                    <div
+                                        className="
+                                            flex
+                                            w-fit
+                                            items-center
+                                            gap-2
+                                            rounded-full
+                                            bg-amber-50
+                                            px-4
+                                            py-2
+                                        "
+                                    >
+                                        <Star
+                                            size={16}
+                                            fill="currentColor"
+                                            className="text-amber-500"
+                                        />
+
+                                        <span className="font-bold text-slate-800">
+                                            {averageRating}
+                                        </span>
+
+                                        <span className="text-sm text-slate-500">
+                                            / 5
+                                        </span>
+                                    </div>
+
+                                </div>
+
+
+                                {reviews.length === 0 ? (
+
+                                    <div
+                                        className="
+                                            mt-7
+                                            rounded-2xl
+                                            border
+                                            border-dashed
+                                            border-slate-200
+                                            bg-slate-50/70
+                                            px-6
+                                            py-12
+                                            text-center
+                                        "
+                                    >
+
+                                        <div
+                                            className="
+                                                mx-auto
+                                                flex
+                                                h-12
+                                                w-12
+                                                items-center
+                                                justify-center
+                                                rounded-xl
+                                                bg-white
+                                                text-slate-400
+                                                shadow-sm
+                                            "
+                                        >
+                                            <MessageSquare size={21} />
+                                        </div>
+
+                                        <h3 className="mt-4 font-bold text-slate-800">
+                                            No Reviews Yet
+                                        </h3>
+
+                                        <p className="mt-1 text-sm text-slate-500">
+                                            Be the first customer to share your
+                                            experience.
+                                        </p>
+
+                                    </div>
+
+                                ) : (
+
+                                    <div className="mt-7 space-y-4">
+
+                                        {reviews.map((item) => (
+
+                                            <div
+                                                key={item._id}
+                                                className="
+                                                    rounded-2xl
+                                                    border
+                                                    border-slate-100
+                                                    bg-slate-50/60
+                                                    p-5
+                                                    sm:p-6
+                                                "
+                                            >
 
                                                 <div
-
-                                                    key={item._id}
-
-                                                    className="border rounded-2xl p-6"
-
+                                                    className="
+                                                        flex
+                                                        flex-col
+                                                        gap-4
+                                                        sm:flex-row
+                                                        sm:items-start
+                                                        sm:justify-between
+                                                    "
                                                 >
 
-                                                    <div className="flex justify-between">
+                                                    <div className="flex items-center gap-3">
+
+                                                        <div
+                                                            className="
+                                                                flex
+                                                                h-10
+                                                                w-10
+                                                                shrink-0
+                                                                items-center
+                                                                justify-center
+                                                                rounded-full
+                                                                bg-indigo-100
+                                                                text-sm
+                                                                font-bold
+                                                                text-indigo-700
+                                                            "
+                                                        >
+                                                            {(
+                                                                item.customerId
+                                                                    ?.name ||
+                                                                "C"
+                                                            )
+                                                                .charAt(0)
+                                                                .toUpperCase()}
+                                                        </div>
 
                                                         <div>
 
-                                                            <h3 className="font-bold text-xl">
-
-                                                                {item.customerId?.name}
-
+                                                            <h3 className="font-bold text-slate-800">
+                                                                {item.customerId
+                                                                    ?.name ||
+                                                                    "Customer"}
                                                             </h3>
 
-                                                            <p className="text-gray-500 mt-1">
-
-                                                                {new Date(item.createdAt).toLocaleDateString()}
-
+                                                            <p className="mt-0.5 text-xs text-slate-400">
+                                                                {item.createdAt
+                                                                    ? new Date(
+                                                                          item.createdAt
+                                                                      ).toLocaleDateString()
+                                                                    : ""}
                                                             </p>
-
-                                                        </div>
-
-                                                        <div className="text-yellow-500 font-bold">
-
-                                                            {"⭐".repeat(item.rating)}
 
                                                         </div>
 
                                                     </div>
 
-                                                    <p className="mt-5 text-gray-700">
 
-                                                        {item.review}
+                                                    <div className="flex items-center gap-1">
 
-                                                    </p>
+                                                        {[1, 2, 3, 4, 5].map(
+                                                            (star) => (
+                                                                <Star
+                                                                    key={star}
+                                                                    size={15}
+                                                                    fill={
+                                                                        star <=
+                                                                        Number(
+                                                                            item.rating ||
+                                                                                0
+                                                                        )
+                                                                            ? "currentColor"
+                                                                            : "none"
+                                                                    }
+                                                                    className={
+                                                                        star <=
+                                                                        Number(
+                                                                            item.rating ||
+                                                                                0
+                                                                        )
+                                                                            ? "text-amber-500"
+                                                                            : "text-slate-300"
+                                                                    }
+                                                                />
+                                                            )
+                                                        )}
+
+                                                    </div>
 
                                                 </div>
 
-                                            ))
 
-                                        }
+                                                <p className="mt-5 text-sm leading-7 text-slate-600">
+                                                    {item.review ||
+                                                        "Great service experience."}
+                                                </p>
+
+                                            </div>
+
+                                        ))}
 
                                     </div>
 
-                            }
+                                )}
+
+                            </section>
 
                         </div>
 
-                    </div>
 
-                    {/* Right */}
+                        {/* =================================================
+                            RIGHT BOOKING CARD
+                        ================================================= */}
 
-                    <div>
+                        <aside>
 
-                        <div className="bg-white rounded-3xl shadow-xl p-8 sticky top-24">
-
-                            <h2 className="text-4xl font-bold text-blue-700">
-
-                                ₹{provider.price}
-
-                            </h2>
-
-                            <p className="text-gray-500">
-
-                                Starting Price
-
-                            </p>
-
-                            <div className="space-y-6 mt-10">
-
-                                <div className="flex items-center gap-4">
-
-                                    <FaBriefcase className="text-blue-600 text-xl" />
-
-                                    <div>
-
-                                        <p className="text-gray-500">
-
-                                            Experience
-
-                                        </p>
-
-                                        <h4 className="font-bold">
-
-                                            {provider.experience} Years
-
-                                        </h4>
-
-                                    </div>
-
-                                </div>
-
-                                <div className="flex items-center gap-4">
-
-                                    <FaMapMarkerAlt className="text-red-500 text-xl" />
-
-                                    <div>
-
-                                        <p className="text-gray-500">
-
-                                            City
-
-                                        </p>
-
-                                        <h4 className="font-bold">
-
-                                            {provider.city}
-
-                                        </h4>
-
-                                    </div>
-
-                                </div>
-
-                                <div className="flex items-center gap-4">
-
-                                    <FaRupeeSign className="text-green-600 text-xl" />
-
-                                    <div>
-
-                                        <p className="text-gray-500">
-
-                                            Address
-
-                                        </p>
-
-                                        <h4 className="font-bold">
-
-                                            {provider.address}
-
-                                        </h4>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <div className="mt-10 space-y-3">
-
-                                <div className="flex items-center gap-3">
-
-                                    <FaCheckCircle className="text-green-600" />
-
-                                    Verified Professional
-
-                                </div>
-
-                                <div className="flex items-center gap-3">
-
-                                    <FaCheckCircle className="text-green-600" />
-
-                                    Secure Booking
-
-                                </div>
-
-                                <div className="flex items-center gap-3">
-
-                                    <FaCheckCircle className="text-green-600" />
-
-                                    Affordable Pricing
-
-                                </div>
-
-                            </div>
-
-                            <button
-
-                                onClick={() => navigate(`/book/${provider._id}`)}
-
-                                className="w-full mt-10 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl text-lg font-semibold transition"
-
+                            <div
+                                className="
+                                    sticky
+                                    top-24
+                                    overflow-hidden
+                                    rounded-[28px]
+                                    border
+                                    border-slate-200
+                                    bg-white
+                                    shadow-[0_12px_40px_rgba(15,23,42,0.08)]
+                                "
                             >
 
-                                Book Service
+                                {/* Price header */}
 
-                            </button>
+                                <div className="bg-gradient-to-br from-indigo-50 to-violet-50 p-6 sm:p-7">
 
-                        </div>
+                                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-indigo-600">
+                                        Service Pricing
+                                    </p>
+
+                                    <div className="mt-3 flex items-end gap-2">
+
+                                        <span
+                                            className="
+                                                text-4xl
+                                                font-bold
+                                                tracking-tight
+                                                text-indigo-700
+                                            "
+                                        >
+                                            ₹{price}
+                                        </span>
+
+                                    </div>
+
+                                    <p className="mt-1 text-sm text-slate-500">
+                                        Starting price
+                                    </p>
+
+                                </div>
+
+
+                                <div className="p-6 sm:p-7">
+
+                                    {/* Quick information */}
+
+                                    <div className="space-y-5">
+
+                                        <div className="flex items-start gap-3">
+
+                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+                                                <BriefcaseBusiness size={18} />
+                                            </div>
+
+                                            <div>
+
+                                                <p className="text-xs text-slate-400">
+                                                    Experience
+                                                </p>
+
+                                                <p className="mt-1 font-bold text-slate-800">
+                                                    {experience} Years
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div className="flex items-start gap-3">
+
+                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+                                                <MapPin size={18} />
+                                            </div>
+
+                                            <div className="min-w-0">
+
+                                                <p className="text-xs text-slate-400">
+                                                    City
+                                                </p>
+
+                                                <p className="mt-1 truncate font-bold text-slate-800">
+                                                    {city}
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div className="flex items-start gap-3">
+
+                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                                <CalendarCheck size={18} />
+                                            </div>
+
+                                            <div>
+
+                                                <p className="text-xs text-slate-400">
+                                                    Booking
+                                                </p>
+
+                                                <p className="mt-1 font-bold text-slate-800">
+                                                    Available for booking
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {/* Divider */}
+
+                                    <div className="my-6 h-px bg-slate-100" />
+
+
+                                    {/* Trust */}
+
+                                    <div className="space-y-3">
+
+                                        <div className="flex items-center gap-2.5 text-sm text-slate-600">
+
+                                            <CheckCircle2
+                                                size={17}
+                                                className="text-emerald-500"
+                                            />
+
+                                            Verified professional
+
+                                        </div>
+
+                                        <div className="flex items-center gap-2.5 text-sm text-slate-600">
+
+                                            <CheckCircle2
+                                                size={17}
+                                                className="text-emerald-500"
+                                            />
+
+                                            Secure booking process
+
+                                        </div>
+
+                                        <div className="flex items-center gap-2.5 text-sm text-slate-600">
+
+                                            <CheckCircle2
+                                                size={17}
+                                                className="text-emerald-500"
+                                            />
+
+                                            Transparent starting price
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {/* CTA */}
+
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            navigate(`/book/${provider._id}`)
+                                        }
+                                        className="
+                                            mt-7
+                                            flex
+                                            w-full
+                                            items-center
+                                            justify-center
+                                            gap-2
+                                            rounded-xl
+                                            bg-slate-950
+                                            px-5
+                                            py-4
+                                            text-sm
+                                            font-semibold
+                                            text-white
+                                            shadow-sm
+                                            transition-all
+                                            duration-300
+                                            hover:bg-indigo-600
+                                            hover:shadow-[0_12px_30px_rgba(79,70,229,0.25)]
+                                            active:scale-[0.98]
+                                        "
+                                    >
+                                        Book This Service
+
+                                        <ArrowRight
+                                            size={17}
+                                            className="transition-transform duration-300"
+                                        />
+                                    </button>
+
+
+                                    <p className="mt-4 text-center text-xs leading-5 text-slate-400">
+                                        You can review your booking details
+                                        before confirming.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </aside>
 
                     </div>
 
                 </div>
 
-            </div>
+            </main>
 
             <Footer />
 
-        </>
-
+        </div>
     );
-
 }
 
 export default ProviderDetails;

@@ -6,6 +6,18 @@ import Footer from "../components/Footer";
 
 import { getDashboardStats } from "../api/adminApi";
 
+import {
+    FaUsers,
+    FaUserTie,
+    FaCalendarAlt,
+    FaRupeeSign,
+    FaArrowRight,
+    FaChartLine,
+    FaCogs,
+    FaShieldAlt,
+    FaClipboardList
+} from "react-icons/fa";
+
 function AdminDashboard() {
 
     const [stats, setStats] = useState({
@@ -14,6 +26,8 @@ function AdminDashboard() {
         totalBookings: 0,
         totalRevenue: 0
     });
+
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
 
@@ -29,416 +43,505 @@ function AdminDashboard() {
 
             setStats(data);
 
-        }
-
-        catch (error) {
+        } catch (error) {
 
             console.log(error);
+
+        } finally {
+
+            setLoading(false);
 
         }
 
     };
 
+
+    const statCards = [
+
+        {
+            title: "Total Users",
+            value: stats.totalUsers,
+            label: "Registered customers",
+            icon: FaUsers,
+            iconBg: "bg-indigo-50",
+            iconColor: "text-[#3525cd]"
+        },
+
+        {
+            title: "Providers",
+            value: stats.totalProviders,
+            label: "Service professionals",
+            icon: FaUserTie,
+            iconBg: "bg-emerald-50",
+            iconColor: "text-emerald-600"
+        },
+
+        {
+            title: "Bookings",
+            value: stats.totalBookings,
+            label: "Total service requests",
+            icon: FaCalendarAlt,
+            iconBg: "bg-amber-50",
+            iconColor: "text-amber-600"
+        },
+
+        {
+            title: "Revenue",
+            value: `₹${Number(stats.totalRevenue || 0).toLocaleString("en-IN")}`,
+            label: "Platform revenue",
+            icon: FaRupeeSign,
+            iconBg: "bg-purple-50",
+            iconColor: "text-purple-600"
+        }
+
+    ];
+
+
+    const adminActions = [
+
+        {
+            title: "Manage Users",
+            description:
+                "View, search and manage registered customer accounts across the platform.",
+            path: "/admin/users",
+            icon: FaUsers,
+            iconBg: "bg-indigo-50",
+            iconColor: "text-[#3525cd]"
+        },
+
+        {
+            title: "Manage Providers",
+            description:
+                "Review, approve and manage service professionals on MultiServe.",
+            path: "/admin/providers",
+            icon: FaUserTie,
+            iconBg: "bg-emerald-50",
+            iconColor: "text-emerald-600"
+        },
+
+        {
+            title: "Manage Services",
+            description:
+                "Add, update and organize the services available to customers.",
+            path: "/admin/services",
+            icon: FaCogs,
+            iconBg: "bg-amber-50",
+            iconColor: "text-amber-600"
+        },
+
+        {
+            title: "Manage Bookings",
+            description:
+                "Monitor customer bookings, service status and platform activity.",
+            path: "/admin/bookings",
+            icon: FaClipboardList,
+            iconBg: "bg-purple-50",
+            iconColor: "text-purple-600"
+        }
+
+    ];
+
+
+    if (loading) {
+
+        return (
+
+            <>
+
+                <Navbar />
+
+                <main className="min-h-screen bg-[#fcf8ff]">
+
+                    <section className="bg-[#3525cd]">
+
+                        <div className="max-w-7xl mx-auto px-5 sm:px-6 py-12 sm:py-14">
+
+                            <div className="h-5 w-32 rounded-full bg-white/20 animate-pulse" />
+
+                            <div className="mt-5 h-10 sm:h-12 w-72 sm:w-96 rounded-xl bg-white/20 animate-pulse" />
+
+                            <div className="mt-4 h-5 w-full max-w-xl rounded-full bg-white/10 animate-pulse" />
+
+                        </div>
+
+                    </section>
+
+
+                    <div className="max-w-7xl mx-auto px-5 sm:px-6 py-10">
+
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+
+                            {[1, 2, 3, 4].map(item => (
+
+                                <div
+                                    key={item}
+                                    className="h-40 rounded-2xl bg-white border border-slate-100 animate-pulse"
+                                />
+
+                            ))}
+
+                        </div>
+
+
+                        <div className="mt-12">
+
+                            <div className="h-8 w-52 rounded-lg bg-slate-200 animate-pulse" />
+
+                            <div className="mt-3 h-4 w-80 rounded-lg bg-slate-100 animate-pulse" />
+
+                            <div className="mt-7 grid md:grid-cols-2 xl:grid-cols-4 gap-5">
+
+                                {[1, 2, 3, 4].map(item => (
+
+                                    <div
+                                        key={item}
+                                        className="h-64 rounded-3xl bg-white border border-slate-100 animate-pulse"
+                                    />
+
+                                ))}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </main>
+
+            </>
+
+        );
+
+    }
+
+
     return (
 
         <>
-    <Navbar />
 
-    {/* Hero */}
+            <Navbar />
 
-    <section className="bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 text-white">
 
-        <div className="max-w-7xl mx-auto px-6 py-16">
+            <main className="min-h-screen bg-[#fcf8ff]">
 
-            <h1 className="text-5xl font-bold">
 
-                Admin Dashboard
+                {/* =====================================================
+                    HERO
+                ====================================================== */}
 
-            </h1>
+                <section className="relative overflow-hidden bg-[#3525cd] text-white">
 
-            <p className="mt-4 text-xl text-blue-100">
+                    <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
 
-                Monitor users, providers, bookings and platform performance.
+                    <div className="absolute -bottom-32 left-1/3 h-80 w-80 rounded-full bg-purple-400/20 blur-3xl" />
 
-            </p>
 
-        </div>
+                    <div className="relative max-w-7xl mx-auto px-5 sm:px-6 py-11 sm:py-14">
 
-    </section>
+                        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
 
-    <div className="max-w-7xl mx-auto px-6 py-12">
+                            <div>
 
-        {/* Statistics */}
+                                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs sm:text-sm font-semibold text-indigo-100">
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                                    <FaShieldAlt />
 
-            <div className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition p-8">
+                                    Platform Administration
 
-                <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center text-3xl">
+                                </div>
 
-                    👥
 
-                </div>
+                                <h1 className="mt-5 text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
 
-                <p className="text-gray-500 mt-6">
+                                    Admin Dashboard
 
-                    Total Users
+                                </h1>
 
-                </p>
 
-                <h2 className="text-5xl font-bold mt-2">
+                                <p className="mt-4 max-w-2xl text-sm sm:text-base lg:text-lg leading-7 text-indigo-100">
 
-                    {stats.totalUsers}
+                                    Monitor users, providers, bookings and
 
-                </h2>
+                                    overall MultiServe platform performance
 
-            </div>
+                                    from one place.
 
-            <div className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition p-8">
+                                </p>
 
-                <div className="w-16 h-16 rounded-2xl bg-green-100 flex items-center justify-center text-3xl">
+                            </div>
 
-                    👷
 
-                </div>
+                            <div className="rounded-2xl border border-white/10 bg-white/10 px-5 py-4 backdrop-blur-md">
 
-                <p className="text-gray-500 mt-6">
+                                <div className="flex items-center gap-3">
 
-                    Providers
+                                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10">
 
-                </p>
+                                        <FaChartLine />
 
-                <h2 className="text-5xl font-bold mt-2">
+                                    </div>
 
-                    {stats.totalProviders}
+                                    <div>
 
-                </h2>
+                                        <p className="text-xs text-indigo-200">
 
-            </div>
+                                            Platform Overview
 
-            <div className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition p-8">
+                                        </p>
 
-                <div className="w-16 h-16 rounded-2xl bg-yellow-100 flex items-center justify-center text-3xl">
+                                        <p className="mt-1 text-sm font-bold">
 
-                    📅
+                                            Live dashboard statistics
 
-                </div>
+                                        </p>
 
-                <p className="text-gray-500 mt-6">
+                                    </div>
 
-                    Bookings
+                                </div>
 
-                </p>
+                            </div>
 
-                <h2 className="text-5xl font-bold mt-2">
-
-                    {stats.totalBookings}
-
-                </h2>
-
-            </div>
-
-            <div className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition p-8">
-
-                <div className="w-16 h-16 rounded-2xl bg-purple-100 flex items-center justify-center text-3xl">
-
-                    💰
-
-                </div>
-
-                <p className="text-gray-500 mt-6">
-
-                    Revenue
-
-                </p>
-
-                <h2 className="text-5xl font-bold mt-2">
-
-                    ₹{stats.totalRevenue}
-
-                </h2>
-
-            </div>
-
-        </div>
-                {/* Admin Controls */}
-
-        <div className="mt-16">
-
-            <div className="flex items-center justify-between mb-8">
-
-                <div>
-
-                    <h2 className="text-4xl font-bold">
-
-                        Admin Controls
-
-                    </h2>
-
-                    <p className="text-gray-500 mt-2">
-
-                        Manage every part of the MultiServe platform.
-
-                    </p>
-
-                </div>
-
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-
-                <Link
-                    to="/admin/users"
-                    className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition duration-300 p-8 border hover:border-blue-500"
-                >
-
-                    <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center text-3xl group-hover:scale-110 transition">
-
-                        👥
-
-                    </div>
-
-                    <h3 className="text-2xl font-bold mt-6">
-
-                        Users
-
-                    </h3>
-
-                    <p className="text-gray-500 mt-3 leading-7">
-
-                        View, search and manage all registered customers.
-
-                    </p>
-
-                    <div className="mt-6 text-blue-600 font-semibold">
-
-                        Manage →
-
-                    </div>
-
-                </Link>
-
-                <Link
-                    to="/admin/providers"
-                    className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition duration-300 p-8 border hover:border-green-500"
-                >
-
-                    <div className="w-16 h-16 rounded-2xl bg-green-100 flex items-center justify-center text-3xl group-hover:scale-110 transition">
-
-                        👷
-
-                    </div>
-
-                    <h3 className="text-2xl font-bold mt-6">
-
-                        Providers
-
-                    </h3>
-
-                    <p className="text-gray-500 mt-3 leading-7">
-
-                        Approve, update and manage service providers.
-
-                    </p>
-
-                    <div className="mt-6 text-green-600 font-semibold">
-
-                        Manage →
-
-                    </div>
-
-                </Link>
-
-                <Link
-                    to="/admin/services"
-                    className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition duration-300 p-8 border hover:border-yellow-500"
-                >
-
-                    <div className="w-16 h-16 rounded-2xl bg-yellow-100 flex items-center justify-center text-3xl group-hover:scale-110 transition">
-
-                        🛠
-
-                    </div>
-
-                    <h3 className="text-2xl font-bold mt-6">
-
-                        Services
-
-                    </h3>
-
-                    <p className="text-gray-500 mt-3 leading-7">
-
-                        Add, edit or remove available services.
-
-                    </p>
-
-                    <div className="mt-6 text-yellow-600 font-semibold">
-
-                        Manage →
-
-                    </div>
-
-                </Link>
-
-                <Link
-                    to="/admin/bookings"
-                    className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition duration-300 p-8 border hover:border-purple-500"
-                >
-
-                    <div className="w-16 h-16 rounded-2xl bg-purple-100 flex items-center justify-center text-3xl group-hover:scale-110 transition">
-
-                        📅
-
-                    </div>
-
-                    <h3 className="text-2xl font-bold mt-6">
-
-                        Bookings
-
-                    </h3>
-
-                    <p className="text-gray-500 mt-3 leading-7">
-
-                        Monitor and manage all customer bookings.
-
-                    </p>
-
-                    <div className="mt-6 text-purple-600 font-semibold">
-
-                        Manage →
-
-                    </div>
-
-                </Link>
-
-            </div>
-
-        </div>
-                    {/* Admin Controls */}
-
-            <div className="mt-16">
-
-                <div className="flex items-center justify-between mb-8">
-
-                    <div>
-
-                        <h2 className="text-4xl font-bold text-gray-900">
-                            Quick Actions
-                        </h2>
-
-                        <p className="text-gray-500 mt-2">
-                            Manage every section of MultiServe from one place.
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-8">
-
-                    <Link
-                        to="/admin/users"
-                        className="bg-white rounded-3xl p-8 shadow-md hover:shadow-2xl hover:-translate-y-2 transition duration-300 border border-gray-100 group"
-                    >
-
-                        <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition">
-                            👥
                         </div>
 
-                        <h3 className="text-2xl font-bold">
-                            Users
-                        </h3>
+                    </div>
 
-                        <p className="text-gray-500 mt-3 leading-7">
-                            View all customers, search accounts and remove users.
-                        </p>
+                </section>
 
-                        <div className="mt-6 text-blue-600 font-semibold">
-                            Manage →
+
+                {/* =====================================================
+                    STATISTICS
+                ====================================================== */}
+
+                <section className="max-w-7xl mx-auto px-5 sm:px-6 py-8 sm:py-10">
+
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+
+                        {statCards.map((card) => {
+
+                            const Icon = card.icon;
+
+                            return (
+
+                                <div
+                                    key={card.title}
+                                    className="group rounded-2xl border border-slate-100 bg-white p-5 sm:p-6 shadow-[0_8px_30px_rgba(30,27,75,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(30,27,75,0.09)]"
+                                >
+
+                                    <div className="flex items-start justify-between gap-3">
+
+                                        <div className={`flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-xl ${card.iconBg} ${card.iconColor}`}>
+
+                                            <Icon className="text-lg" />
+
+                                        </div>
+
+                                        <span className="hidden sm:block text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+
+                                            Overview
+
+                                        </span>
+
+                                    </div>
+
+
+                                    <p className="mt-5 text-xs sm:text-sm font-medium text-slate-500">
+
+                                        {card.title}
+
+                                    </p>
+
+
+                                    <h2 className="mt-1 text-2xl sm:text-3xl font-extrabold text-[#1b1b24] break-words">
+
+                                        {card.value}
+
+                                    </h2>
+
+
+                                    <p className="mt-1 text-xs sm:text-sm text-slate-400">
+
+                                        {card.label}
+
+                                    </p>
+
+                                </div>
+
+                            );
+
+                        })}
+
+                    </div>
+
+
+                    {/* =================================================
+                        ADMIN CONTROLS
+                    ================================================== */}
+
+                    <section className="mt-12 sm:mt-14">
+
+                        <div className="mb-7">
+
+                            <p className="text-sm font-semibold text-[#3525cd]">
+
+                                Platform management
+
+                            </p>
+
+                            <h2 className="mt-1 text-2xl sm:text-3xl font-extrabold text-[#1b1b24]">
+
+                                Admin Controls
+
+                            </h2>
+
+                            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+
+                                Manage every important section of MultiServe
+
+                                from one centralized workspace.
+
+                            </p>
+
                         </div>
 
-                    </Link>
 
-                    <Link
-                        to="/admin/providers"
-                        className="bg-white rounded-3xl p-8 shadow-md hover:shadow-2xl hover:-translate-y-2 transition duration-300 border border-gray-100 group"
-                    >
+                        <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-5">
 
-                        <div className="w-16 h-16 rounded-2xl bg-green-100 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition">
-                            🛠️
+                            {adminActions.map((action) => {
+
+                                const Icon = action.icon;
+
+                                return (
+
+                                    <Link
+                                        key={action.title}
+                                        to={action.path}
+                                        className="group relative overflow-hidden rounded-3xl border border-slate-100 bg-white p-6 sm:p-7 shadow-[0_8px_30px_rgba(30,27,75,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-indigo-100 hover:shadow-[0_18px_45px_rgba(30,27,75,0.09)]"
+                                    >
+
+                                        <div className={`flex h-14 w-14 items-center justify-center rounded-2xl ${action.iconBg} ${action.iconColor} transition-transform duration-300 group-hover:scale-105`}>
+
+                                            <Icon className="text-xl" />
+
+                                        </div>
+
+
+                                        <h3 className="mt-6 text-lg sm:text-xl font-bold text-[#1b1b24]">
+
+                                            {action.title}
+
+                                        </h3>
+
+
+                                        <p className="mt-3 text-sm leading-6 text-slate-500">
+
+                                            {action.description}
+
+                                        </p>
+
+
+                                        <div className="mt-6 flex items-center gap-2 text-sm font-bold text-[#3525cd]">
+
+                                            Manage
+
+                                            <FaArrowRight className="text-xs transition-transform duration-300 group-hover:translate-x-1" />
+
+                                        </div>
+
+
+                                        <div className="absolute -right-10 -bottom-10 h-28 w-28 rounded-full bg-indigo-50/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+                                    </Link>
+
+                                );
+
+                            })}
+
                         </div>
 
-                        <h3 className="text-2xl font-bold">
-                            Providers
-                        </h3>
+                    </section>
 
-                        <p className="text-gray-500 mt-3 leading-7">
-                            Approve, edit and manage all service providers.
-                        </p>
 
-                        <div className="mt-6 text-green-600 font-semibold">
-                            Manage →
+                    {/* =================================================
+                        PLATFORM SUMMARY
+                    ================================================== */}
+
+                    <section className="mt-12 sm:mt-14">
+
+                        <div className="relative overflow-hidden rounded-3xl bg-[#f5f2ff] border border-indigo-100 p-6 sm:p-8 lg:p-10">
+
+                            <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-indigo-100/60" />
+
+                            <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-7">
+
+                                <div className="max-w-2xl">
+
+                                    <div className="flex items-center gap-3">
+
+                                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-[#3525cd] shadow-sm">
+
+                                            <FaChartLine />
+
+                                        </div>
+
+                                        <div>
+
+                                            <p className="text-xs font-bold uppercase tracking-wider text-[#3525cd]">
+
+                                                Platform health
+
+                                            </p>
+
+                                            <h3 className="mt-1 text-xl sm:text-2xl font-extrabold text-[#1b1b24]">
+
+                                                Everything in one workspace
+
+                                            </h3>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <p className="mt-5 text-sm leading-7 text-slate-600">
+
+                                        Use the management tools above to keep
+
+                                        users, providers, services and bookings
+
+                                        organized and up to date.
+
+                                    </p>
+
+                                </div>
+
+
+                                <Link
+                                    to="/admin/bookings"
+                                    className="group inline-flex w-full sm:w-fit shrink-0 items-center justify-center gap-3 rounded-xl bg-[#3525cd] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-200 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#2d20b0]"
+                                >
+
+                                    View Bookings
+
+                                    <FaArrowRight className="text-xs transition-transform group-hover:translate-x-1" />
+
+                                </Link>
+
+                            </div>
+
                         </div>
 
-                    </Link>
+                    </section>
 
-                    <Link
-                        to="/admin/services"
-                        className="bg-white rounded-3xl p-8 shadow-md hover:shadow-2xl hover:-translate-y-2 transition duration-300 border border-gray-100 group"
-                    >
+                </section>
 
-                        <div className="w-16 h-16 rounded-2xl bg-orange-100 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition">
-                            🏷️
-                        </div>
+            </main>
 
-                        <h3 className="text-2xl font-bold">
-                            Services
-                        </h3>
 
-                        <p className="text-gray-500 mt-3 leading-7">
-                            Add new services, update pricing and categories.
-                        </p>
+            <Footer />
 
-                        <div className="mt-6 text-orange-600 font-semibold">
-                            Manage →
-                        </div>
+        </>
 
-                    </Link>
-
-                    <Link
-                        to="/admin/bookings"
-                        className="bg-white rounded-3xl p-8 shadow-md hover:shadow-2xl hover:-translate-y-2 transition duration-300 border border-gray-100 group"
-                    >
-
-                        <div className="w-16 h-16 rounded-2xl bg-purple-100 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition">
-                            📅
-                        </div>
-
-                        <h3 className="text-2xl font-bold">
-                            Bookings
-                        </h3>
-
-                        <p className="text-gray-500 mt-3 leading-7">
-                            Monitor bookings, disputes and completed services.
-                        </p>
-
-                        <div className="mt-6 text-purple-600 font-semibold">
-                            Manage →
-                        </div>
-
-                    </Link>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <Footer />
-
-    </>
-
-);
+    );
 
 }
 

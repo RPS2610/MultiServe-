@@ -17,9 +17,13 @@ import {
     FaClock,
     FaMoneyBillWave,
     FaStar,
-    FaUserCircle,
     FaMapMarkerAlt,
-    FaPhoneAlt
+    FaPhoneAlt,
+    FaArrowRight,
+    FaCalendarAlt,
+    FaUser,
+    FaBriefcase,
+    FaChartLine
 } from "react-icons/fa";
 
 function ProviderDashboard() {
@@ -27,40 +31,38 @@ function ProviderDashboard() {
     const currentUser = JSON.parse(localStorage.getItem("user"));
 
     const [bookings, setBookings] = useState([]);
-
     const [reviews, setReviews] = useState([]);
-
     const [loading, setLoading] = useState(true);
+    const [updatingId, setUpdatingId] = useState(null);
 
     useEffect(() => {
 
-    if (currentUser?._id) {
-        loadDashboard();
-    }
+        if (currentUser?._id) {
+            loadDashboard();
+        } else {
+            setLoading(false);
+        }
 
-}, []);
+    }, []);
 
     const loadDashboard = async () => {
 
         try {
 
-            const bookingData = await getProviderBookings(currentUser._id);
+            const bookingData =
+                await getProviderBookings(currentUser._id);
 
-            const reviewData = await getProviderReviews(currentUser._id);
+            const reviewData =
+                await getProviderReviews(currentUser._id);
 
-            setBookings(bookingData);
+            setBookings(bookingData || []);
+            setReviews(reviewData || []);
 
-            setReviews(reviewData);
-
-        }
-
-        catch (err) {
+        } catch (err) {
 
             console.log(err);
 
-        }
-
-        finally {
+        } finally {
 
             setLoading(false);
 
@@ -68,45 +70,94 @@ function ProviderDashboard() {
 
     };
 
+    const updateStatus = async (id, status) => {
 
-   const updateStatus = async (id, status) => {
-    try {
-        await updateBookingStatus(id, status);
-        await loadDashboard();
-    }
-    catch (err) {
-        console.log(err);
-    }
-};
+        try {
+
+            setUpdatingId(id);
+
+            await updateBookingStatus(id, status);
+
+            await loadDashboard();
+
+        } catch (err) {
+
+            console.log(err);
+
+        } finally {
+
+            setUpdatingId(null);
+        }
+
+    };
 
     const totalBookings = bookings.length;
 
     const pendingBookings =
-        bookings.filter(item => item.status === "Pending").length;
+        bookings.filter(
+            item => item.status === "Pending"
+        ).length;
 
     const acceptedBookings =
-        bookings.filter(item => item.status === "Accepted").length;
+        bookings.filter(
+            item => item.status === "Accepted"
+        ).length;
 
     const completedBookings =
-        bookings.filter(item => item.status === "Completed").length;
-        
-const totalEarnings =
-    bookings
-        .filter(item => item.status === "Completed")
-        .reduce(
-            (sum, item) => sum + (item.price || currentUser?.price || 0),
-            0
-        );
+        bookings.filter(
+            item => item.status === "Completed"
+        ).length;
+
+    const totalEarnings =
+        bookings
+            .filter(item => item.status === "Completed")
+            .reduce(
+                (sum, item) =>
+                    sum +
+                    (item.price ||
+                        currentUser?.price ||
+                        0),
+                0
+            );
 
     const averageRating =
         reviews.length > 0
             ? (
                 reviews.reduce(
-                    (sum, item) => sum + item.rating,
+                    (sum, item) =>
+                        sum + Number(item.rating || 0),
                     0
                 ) / reviews.length
             ).toFixed(1)
-            : "0";
+            : "0.0";
+
+
+    const getStatusStyle = (status) => {
+
+        switch (status) {
+
+            case "Pending":
+                return "bg-amber-50 text-amber-700 border-amber-200";
+
+            case "Accepted":
+                return "bg-emerald-50 text-emerald-700 border-emerald-200";
+
+            case "Completed":
+                return "bg-indigo-50 text-indigo-700 border-indigo-200";
+
+            case "Rejected":
+                return "bg-red-50 text-red-700 border-red-200";
+
+            case "Cancelled":
+                return "bg-slate-100 text-slate-600 border-slate-200";
+
+            default:
+                return "bg-slate-100 text-slate-600 border-slate-200";
+
+        }
+
+    };
+
 
     if (loading) {
 
@@ -116,15 +167,42 @@ const totalEarnings =
 
                 <Navbar />
 
-                <div className="min-h-screen flex items-center justify-center">
+                <main className="min-h-screen bg-[#fcf8ff]">
 
-                    <h1 className="text-3xl font-bold">
+                    <section className="bg-[#3525cd]">
 
-                        Loading Dashboard...
+                        <div className="max-w-7xl mx-auto px-5 sm:px-6 py-12">
 
-                    </h1>
+                            <div className="h-4 w-28 rounded-full bg-white/20 animate-pulse" />
 
-                </div>
+                            <div className="mt-5 h-10 sm:h-12 w-72 sm:w-96 rounded-xl bg-white/20 animate-pulse" />
+
+                            <div className="mt-4 h-5 w-80 max-w-full rounded-full bg-white/10 animate-pulse" />
+
+                        </div>
+
+                    </section>
+
+                    <div className="max-w-7xl mx-auto px-5 sm:px-6 py-10">
+
+                        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
+
+                            {[1, 2, 3, 4, 5].map(item => (
+
+                                <div
+                                    key={item}
+                                    className="h-40 rounded-2xl bg-white border border-slate-100 animate-pulse"
+                                />
+
+                            ))}
+
+                        </div>
+
+                        <div className="mt-10 h-80 rounded-3xl bg-white border border-slate-100 animate-pulse" />
+
+                    </div>
+
+                </main>
 
             </>
 
@@ -132,238 +210,90 @@ const totalEarnings =
 
     }
 
+
     return (
 
         <>
 
             <Navbar />
 
-            {/* Hero */}
+            <main className="min-h-screen bg-[#fcf8ff]">
 
-            <section className="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 text-white">
 
-                <div className="max-w-7xl mx-auto px-6 py-14">
+                {/* =====================================================
+                    HERO
+                ====================================================== */}
 
-                    <h1 className="text-5xl font-bold">
+                <section className="relative overflow-hidden bg-[#3525cd] text-white">
 
-                        Welcome Back,
+                    <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
 
-                        <span className="text-yellow-300">
+                    <div className="absolute -bottom-32 left-1/3 h-80 w-80 rounded-full bg-purple-400/20 blur-3xl" />
 
-                            {" "} {currentUser.name}
+                    <div className="relative max-w-7xl mx-auto px-5 sm:px-6 py-10 sm:py-14">
 
-                        </span>
+                        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
 
-                    </h1>
+                            <div>
 
-                    <p className="mt-4 text-xl text-blue-100">
+                                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs sm:text-sm font-semibold text-white/90">
 
-                        Manage your customers, bookings and earnings.
+                                    <FaBriefcase />
 
-                    </p>
+                                    Provider Dashboard
 
-                </div>
+                                </div>
 
-            </section>
+                                <h1 className="mt-5 text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
 
-            {/* Statistics */}
+                                    Welcome back,
 
-            <div className="max-w-7xl mx-auto px-6 py-10">
+                                    <span className="block text-indigo-200">
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
+                                        {currentUser?.name || "Provider"}
 
-                    <div className="bg-white rounded-3xl shadow-lg p-6">
+                                    </span>
 
-                        <FaClipboardList className="text-blue-600 text-5xl" />
+                                </h1>
 
-                        <h2 className="text-4xl font-bold mt-5">
+                                <p className="mt-4 max-w-2xl text-sm sm:text-base lg:text-lg leading-7 text-indigo-100">
 
-                            {totalBookings}
+                                    Manage your bookings, connect with customers,
 
-                        </h2>
+                                    track your work and monitor your earnings.
 
-                        <p className="text-gray-500 mt-2">
-
-                            Total Bookings
-
-                        </p>
-
-                    </div>
-
-                    <div className="bg-white rounded-3xl shadow-lg p-6">
-
-                        <FaClock className="text-orange-500 text-5xl" />
-
-                        <h2 className="text-4xl font-bold mt-5">
-
-                            {pendingBookings}
-
-                        </h2>
-
-                        <p className="text-gray-500 mt-2">
-
-                            Pending
-
-                        </p>
-
-                    </div>
-
-                    <div className="bg-white rounded-3xl shadow-lg p-6">
-
-                        <FaCheckCircle className="text-green-600 text-5xl" />
-
-                        <h2 className="text-4xl font-bold mt-5">
-
-                            {acceptedBookings}
-
-                        </h2>
-
-                        <p className="text-gray-500 mt-2">
-
-                            Accepted
-
-                        </p>
-
-                    </div>
-
-                    <div className="bg-white rounded-3xl shadow-lg p-6">
-
-                        <FaMoneyBillWave className="text-emerald-600 text-5xl" />
-
-                        <h2 className="text-3xl font-bold mt-5">
-
-                            ₹{totalEarnings}
-
-                        </h2>
-
-                        <p className="text-gray-500 mt-2">
-
-                            Earnings
-
-                        </p>
-
-                    </div>
-
-                    <div className="bg-white rounded-3xl shadow-lg p-6">
-
-                        <FaStar className="text-yellow-500 text-5xl" />
-
-                        <h2 className="text-4xl font-bold mt-5">
-
-                            {averageRating}
-
-                        </h2>
-
-                        <p className="text-gray-500 mt-2">
-
-                            Rating
-
-                        </p>
-
-                    </div>
-
-                </div>
-
-                {/* Customer Bookings */}
-
-                <div className="mt-14">
-
-                    <h2 className="text-4xl font-bold mb-8">
-
-                        Customer Bookings
-
-                    </h2>
-
-                    <div className="space-y-6">
-                        {
-
-    bookings.length === 0 ?
-
-        (
-
-            <div className="bg-white rounded-3xl shadow-lg p-12 text-center">
-
-                <img
-                    src="https://cdn-icons-png.flaticon.com/512/4076/4076478.png"
-                    alt=""
-                    className="w-28 mx-auto mb-5 opacity-60"
-                />
-
-                <h2 className="text-2xl font-bold">
-
-                    No Bookings Yet
-
-                </h2>
-
-                <p className="text-gray-500 mt-3">
-
-                    Once customers book your service, they'll appear here.
-
-                </p>
-
-            </div>
-
-        )
-
-        :
-
-        bookings.map((booking) => (
-
-            <div
-
-                key={booking._id}
-
-                className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition duration-300 p-8"
-
-            >
-
-                <div className="flex flex-col lg:flex-row justify-between gap-8">
-
-                    {/* Left */}
-
-                    <div className="flex gap-5">
-
-                        <img
-
-                            src="https://placehold.co/90x90"
-
-                            alt="customer"
-
-                            className="w-20 h-20 rounded-full"
-
-                        />
-
-                        <div>
-
-                            <h2 className="text-2xl font-bold">
-
-                                {booking.customerName}
-
-                            </h2>
-
-                            <div className="flex items-center gap-2 mt-3 text-gray-600">
-
-                                <FaPhoneAlt />
-
-                                {booking.customerPhone}
+                                </p>
 
                             </div>
 
-                            <div className="flex items-center gap-2 mt-2 text-gray-600">
 
-                                <FaMapMarkerAlt />
+                            <div className="rounded-2xl border border-white/10 bg-white/10 px-5 py-4 backdrop-blur-md">
 
-                                {booking.customerAddress}
+                                <div className="flex items-center gap-3">
 
-                            </div>
+                                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10">
 
-                            <div className="mt-3">
+                                        <FaChartLine />
 
-                                <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full">
+                                    </div>
 
-                                    {booking.service}
+                                    <div>
 
-                                </span>
+                                        <p className="text-xs text-indigo-200">
+
+                                            Completed Jobs
+
+                                        </p>
+
+                                        <p className="mt-1 text-xl font-bold">
+
+                                            {completedBookings}
+
+                                        </p>
+
+                                    </div>
+
+                                </div>
 
                             </div>
 
@@ -371,270 +301,627 @@ const totalEarnings =
 
                     </div>
 
-                    {/* Right */}
+                </section>
 
-                    <div className="text-right">
 
-                        {
+                {/* =====================================================
+                    STATISTICS
+                ====================================================== */}
 
-                            booking.status === "Pending" &&
+                <section className="max-w-7xl mx-auto px-5 sm:px-6 py-8 sm:py-10">
 
-                            <span className="bg-yellow-100 text-yellow-700 px-5 py-2 rounded-full font-semibold">
+                    <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
 
-                                Pending
+                        {/* Total */}
 
-                            </span>
+                        <div className="group rounded-2xl border border-slate-100 bg-white p-5 sm:p-6 shadow-[0_8px_30px_rgba(30,27,75,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(30,27,75,0.09)]">
 
-                        }
+                            <div className="flex items-center justify-between">
 
-                        {
+                                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-[#3525cd]">
 
-                            booking.status === "Accepted" &&
+                                    <FaClipboardList />
 
-                            <span className="bg-green-100 text-green-700 px-5 py-2 rounded-full font-semibold">
+                                </div>
 
-                                Accepted
+                                <span className="text-xs font-semibold text-slate-400">
 
-                            </span>
+                                    All time
 
-                        }
+                                </span>
 
-                        {
+                            </div>
 
-                            booking.status === "Completed" &&
+                            <h2 className="mt-5 text-3xl font-extrabold text-[#1b1b24]">
 
-                            <span className="bg-blue-100 text-blue-700 px-5 py-2 rounded-full font-semibold">
+                                {totalBookings}
 
-                                Completed
+                            </h2>
 
-                            </span>
+                            <p className="mt-1 text-sm text-slate-500">
 
-                        }
+                                Total Bookings
 
-                        {
+                            </p>
 
-                            booking.status === "Rejected" &&
+                        </div>
 
-                            <span className="bg-red-100 text-red-700 px-5 py-2 rounded-full font-semibold">
 
-                                Rejected
+                        {/* Pending */}
 
-                            </span>
+                        <div className="group rounded-2xl border border-slate-100 bg-white p-5 sm:p-6 shadow-[0_8px_30px_rgba(30,27,75,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(30,27,75,0.09)]">
 
-                        }
+                            <div className="flex items-center justify-between">
 
-                        {
+                                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
 
-                            booking.status === "Cancelled" &&
+                                    <FaClock />
 
-                            <span className="bg-gray-200 text-gray-700 px-5 py-2 rounded-full font-semibold">
+                                </div>
 
-                                Cancelled
+                                <span className="text-xs font-semibold text-slate-400">
 
-                            </span>
+                                    Action
 
-                        }
+                                </span>
 
-                        <p className="text-gray-500 mt-5">
+                            </div>
 
-                            {
+                            <h2 className="mt-5 text-3xl font-extrabold text-[#1b1b24]">
 
-                                new Date(
+                                {pendingBookings}
 
-                                    booking.createdAt
+                            </h2>
 
-                                ).toLocaleDateString()
+                            <p className="mt-1 text-sm text-slate-500">
 
-                            }
+                                Pending Requests
 
-                        </p>
+                            </p>
+
+                        </div>
+
+
+                        {/* Accepted */}
+
+                        <div className="group rounded-2xl border border-slate-100 bg-white p-5 sm:p-6 shadow-[0_8px_30px_rgba(30,27,75,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(30,27,75,0.09)]">
+
+                            <div className="flex items-center justify-between">
+
+                                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+
+                                    <FaCheckCircle />
+
+                                </div>
+
+                                <span className="text-xs font-semibold text-slate-400">
+
+                                    Active
+
+                                </span>
+
+                            </div>
+
+                            <h2 className="mt-5 text-3xl font-extrabold text-[#1b1b24]">
+
+                                {acceptedBookings}
+
+                            </h2>
+
+                            <p className="mt-1 text-sm text-slate-500">
+
+                                Accepted Jobs
+
+                            </p>
+
+                        </div>
+
+
+                        {/* Earnings */}
+
+                        <div className="group rounded-2xl border border-slate-100 bg-white p-5 sm:p-6 shadow-[0_8px_30px_rgba(30,27,75,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(30,27,75,0.09)]">
+
+                            <div className="flex items-center justify-between">
+
+                                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+
+                                    <FaMoneyBillWave />
+
+                                </div>
+
+                                <span className="text-xs font-semibold text-slate-400">
+
+                                    Completed
+
+                                </span>
+
+                            </div>
+
+                            <h2 className="mt-5 text-2xl sm:text-3xl font-extrabold text-[#1b1b24]">
+
+                                ₹{totalEarnings.toLocaleString("en-IN")}
+
+                            </h2>
+
+                            <p className="mt-1 text-sm text-slate-500">
+
+                                Total Earnings
+
+                            </p>
+
+                        </div>
+
+
+                        {/* Rating */}
+
+                        <div className="group rounded-2xl border border-slate-100 bg-white p-5 sm:p-6 shadow-[0_8px_30px_rgba(30,27,75,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(30,27,75,0.09)]">
+
+                            <div className="flex items-center justify-between">
+
+                                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-500">
+
+                                    <FaStar />
+
+                                </div>
+
+                                <span className="text-xs font-semibold text-slate-400">
+
+                                    Reviews
+
+                                </span>
+
+                            </div>
+
+                            <h2 className="mt-5 text-3xl font-extrabold text-[#1b1b24]">
+
+                                {averageRating}
+
+                            </h2>
+
+                            <p className="mt-1 text-sm text-slate-500">
+
+                                Average Rating
+
+                            </p>
+
+                        </div>
 
                     </div>
 
-                </div>
 
-                {/* Buttons */}
+                    {/* =================================================
+                        BOOKINGS
+                    ================================================== */}
 
-                <div className="flex flex-wrap gap-4 mt-8">
+                    <section className="mt-12">
 
-                    {
+                        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
 
-                        booking.status === "Pending" &&
+                            <div>
 
-                        <>
+                                <p className="text-sm font-semibold text-[#3525cd]">
 
-                            <button
+                                    Manage your work
 
-                                onClick={() => updateStatus(booking._id, "Accepted")}
+                                </p>
 
-                                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl"
+                                <h2 className="mt-1 text-2xl sm:text-3xl font-extrabold text-[#1b1b24]">
 
-                            >
+                                    Customer Bookings
 
-                                Accept Booking
+                                </h2>
 
-                            </button>
+                                <p className="mt-2 text-sm text-slate-500">
 
-                            <button
+                                    Review requests and update their status.
 
-                                onClick={() => updateStatus(booking._id, "Rejected")}
+                                </p>
 
-                                className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl"
+                            </div>
 
-                            >
+                            <div className="inline-flex items-center gap-2 self-start rounded-full bg-white border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600">
 
-                                Reject Booking
+                                <FaClipboardList className="text-[#3525cd]" />
 
-                            </button>
+                                {totalBookings} total
 
-                        </>
+                            </div>
 
-                    }
+                        </div>
 
-                    {
 
-                        booking.status === "Accepted" &&
+                        {bookings.length === 0 ? (
 
-                        <button
+                            <div className="rounded-3xl border border-slate-100 bg-white px-6 py-14 sm:px-10 text-center shadow-[0_8px_30px_rgba(30,27,75,0.05)]">
 
-                            onClick={() => updateStatus(booking._id, "Completed")}
+                                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-50 text-2xl text-[#3525cd]">
 
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl"
+                                    <FaClipboardList />
 
-                        >
+                                </div>
 
-                            Mark as Completed
+                                <h3 className="mt-5 text-xl font-bold text-[#1b1b24]">
 
-                        </button>
+                                    No bookings yet
 
-                    }
+                                </h3>
 
-                </div>
+                                <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
 
-            </div>
+                                    Once customers book your service,
 
-        ))
+                                    their requests will appear here.
 
-}
+                                </p>
 
-                    </div>
+                            </div>
 
-                </div>
+                        ) : (
 
-                {/* Customer Reviews */}
+                            <div className="space-y-5">
 
-                <div className="mt-20">
+                                {bookings.map((booking) => (
 
-                    <h2 className="text-4xl font-bold mb-8">
+                                    <article
+                                        key={booking._id}
+                                        className="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-[0_8px_30px_rgba(30,27,75,0.05)] transition-all duration-300 hover:shadow-[0_16px_45px_rgba(30,27,75,0.09)]"
+                                    >
 
-                        Customer Reviews
+                                        <div className="p-5 sm:p-7">
 
-                    </h2>
+                                            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
 
-                    <div className="space-y-6">
-                        {
+                                                {/* Customer */}
 
-    reviews.length === 0 ?
+                                                <div className="flex gap-4 sm:gap-5 min-w-0">
 
-    (
+                                                    <div className="flex h-14 w-14 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 text-xl sm:text-2xl text-[#3525cd]">
 
-        <div className="bg-white rounded-3xl shadow-lg p-12 text-center">
+                                                        <FaUser />
 
-            <FaStar className="text-6xl text-yellow-400 mx-auto mb-5" />
+                                                    </div>
 
-            <h2 className="text-2xl font-bold">
+                                                    <div className="min-w-0">
 
-                No Reviews Yet
+                                                        <h3 className="text-lg sm:text-xl font-bold text-[#1b1b24] truncate">
 
-            </h2>
+                                                            {booking.customerName || "Customer"}
 
-            <p className="text-gray-500 mt-3">
+                                                        </h3>
 
-                Reviews from your customers will appear here.
+                                                        <div className="mt-2 flex items-center gap-2 text-sm text-slate-500">
 
-            </p>
+                                                            <FaPhoneAlt className="shrink-0 text-xs text-[#3525cd]" />
 
-        </div>
+                                                            <span className="truncate">
 
-    )
+                                                                {booking.customerPhone || "Phone not available"}
 
-    :
+                                                            </span>
 
-    reviews.map((review) => (
+                                                        </div>
 
-        <div
+                                                        <div className="mt-2 flex items-start gap-2 text-sm text-slate-500">
 
-            key={review._id}
+                                                            <FaMapMarkerAlt className="mt-1 shrink-0 text-xs text-[#3525cd]" />
 
-            className="bg-white rounded-3xl shadow-lg hover:shadow-xl transition p-8"
+                                                            <span className="leading-5">
 
-        >
+                                                                {booking.customerAddress || "Address not available"}
 
-            <div className="flex items-center justify-between">
+                                                            </span>
 
-                <div className="flex items-center gap-5">
+                                                        </div>
 
-                    <img
+                                                    </div>
 
-                        src="https://placehold.co/70x70"
+                                                </div>
 
-                        alt="customer"
 
-                        className="w-16 h-16 rounded-full"
+                                                {/* Status */}
 
-                    />
+                                                <div className="flex items-center justify-between lg:flex-col lg:items-end gap-3">
 
-                    <div>
+                                                    <span className={`inline-flex items-center rounded-full border px-3.5 py-1.5 text-xs font-bold ${getStatusStyle(booking.status)}`}>
 
-                        <h3 className="text-xl font-bold">
+                                                        {booking.status}
 
-                            {review.customerId?.name || "Customer"}
+                                                    </span>
 
-                        </h3>
+                                                    <div className="flex items-center gap-2 text-xs text-slate-400">
 
-                        <p className="text-gray-500">
+                                                        <FaCalendarAlt />
 
-                            {
+                                                        {booking.createdAt
+                                                            ? new Date(booking.createdAt).toLocaleDateString()
+                                                            : "Date unavailable"
+                                                        }
 
-                                new Date(
+                                                    </div>
 
-                                    review.createdAt
+                                                </div>
 
-                                ).toLocaleDateString()
+                                            </div>
 
-                            }
 
-                        </p>
+                                            {/* Booking details */}
 
-                    </div>
+                                            <div className="mt-6 grid gap-3 sm:grid-cols-2">
 
-                </div>
+                                                <div className="rounded-2xl bg-[#f8f7ff] p-4">
 
-                <div className="flex text-yellow-500 text-xl">
+                                                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
 
-                    {"⭐".repeat(review.rating)}
+                                                        Service
 
-                </div>
+                                                    </p>
 
-            </div>
+                                                    <p className="mt-1 font-bold text-[#3525cd]">
 
-            <p className="mt-6 text-gray-700 leading-8">
+                                                        {booking.service || "Service"}
 
-                {review.review}
+                                                    </p>
 
-            </p>
+                                                </div>
 
-        </div>
+                                                <div className="rounded-2xl bg-slate-50 p-4">
 
-    ))
+                                                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
 
-}
+                                                        Booking amount
 
-                    </div>
+                                                    </p>
 
-                </div>
+                                                    <p className="mt-1 font-bold text-[#1b1b24]">
 
-            </div>
+                                                        ₹{(
+                                                            booking.price ||
+                                                            currentUser?.price ||
+                                                            0
+                                                        ).toLocaleString("en-IN")}
+
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            {/* Actions */}
+
+                                            {booking.status === "Pending" && (
+
+                                                <div className="mt-6 flex flex-col sm:flex-row gap-3">
+
+                                                    <button
+                                                        onClick={() =>
+                                                            updateStatus(
+                                                                booking._id,
+                                                                "Accepted"
+                                                            )
+                                                        }
+                                                        disabled={updatingId === booking._id}
+                                                        className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#3525cd] px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-200 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#2d20b0] disabled:cursor-not-allowed disabled:opacity-60"
+                                                    >
+
+                                                        <FaCheckCircle />
+
+                                                        {updatingId === booking._id
+                                                            ? "Updating..."
+                                                            : "Accept Booking"
+                                                        }
+
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() =>
+                                                            updateStatus(
+                                                                booking._id,
+                                                                "Rejected"
+                                                            )
+                                                        }
+                                                        disabled={updatingId === booking._id}
+                                                        className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-5 py-3.5 text-sm font-bold text-red-600 transition-all duration-300 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
+                                                    >
+
+                                                        Reject Booking
+
+                                                    </button>
+
+                                                </div>
+
+                                            )}
+
+
+                                            {booking.status === "Accepted" && (
+
+                                                <div className="mt-6">
+
+                                                    <button
+                                                        onClick={() =>
+                                                            updateStatus(
+                                                                booking._id,
+                                                                "Completed"
+                                                            )
+                                                        }
+                                                        disabled={updatingId === booking._id}
+                                                        className="group inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-[#3525cd] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-200 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#2d20b0] disabled:cursor-not-allowed disabled:opacity-60"
+                                                    >
+
+                                                        <FaCheckCircle />
+
+                                                        {updatingId === booking._id
+                                                            ? "Updating..."
+                                                            : "Mark as Completed"
+                                                        }
+
+                                                        <FaArrowRight className="text-xs transition-transform group-hover:translate-x-1" />
+
+                                                    </button>
+
+                                                </div>
+
+                                            )}
+
+                                        </div>
+
+                                    </article>
+
+                                ))}
+
+                            </div>
+
+                        )}
+
+                    </section>
+
+
+                    {/* =================================================
+                        REVIEWS
+                    ================================================== */}
+
+                    <section className="mt-14 sm:mt-16">
+
+                        <div className="mb-6">
+
+                            <p className="text-sm font-semibold text-[#3525cd]">
+
+                                Customer feedback
+
+                            </p>
+
+                            <h2 className="mt-1 text-2xl sm:text-3xl font-extrabold text-[#1b1b24]">
+
+                                Customer Reviews
+
+                            </h2>
+
+                            <p className="mt-2 text-sm text-slate-500">
+
+                                See what customers are saying about your service.
+
+                            </p>
+
+                        </div>
+
+
+                        {reviews.length === 0 ? (
+
+                            <div className="rounded-3xl border border-slate-100 bg-white px-6 py-14 text-center shadow-[0_8px_30px_rgba(30,27,75,0.05)]">
+
+                                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-50 text-2xl text-amber-500">
+
+                                    <FaStar />
+
+                                </div>
+
+                                <h3 className="mt-5 text-xl font-bold text-[#1b1b24]">
+
+                                    No reviews yet
+
+                                </h3>
+
+                                <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+
+                                    Reviews from your customers will appear here
+
+                                    after they complete a booking.
+
+                                </p>
+
+                            </div>
+
+                        ) : (
+
+                            <div className="grid gap-5 lg:grid-cols-2">
+
+                                {reviews.map((review) => (
+
+                                    <article
+                                        key={review._id}
+                                        className="rounded-3xl border border-slate-100 bg-white p-5 sm:p-7 shadow-[0_8px_30px_rgba(30,27,75,0.05)] transition-all duration-300 hover:shadow-[0_16px_40px_rgba(30,27,75,0.08)]"
+                                    >
+
+                                        <div className="flex items-start justify-between gap-4">
+
+                                            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+
+                                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-[#3525cd]">
+
+                                                    <FaUser />
+
+                                                </div>
+
+                                                <div className="min-w-0">
+
+                                                    <h3 className="font-bold text-[#1b1b24] truncate">
+
+                                                        {review.customerId?.name || "Customer"}
+
+                                                    </h3>
+
+                                                    <p className="mt-1 text-xs text-slate-400">
+
+                                                        {review.createdAt
+                                                            ? new Date(review.createdAt).toLocaleDateString()
+                                                            : "Date unavailable"
+                                                        }
+
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <div className="flex shrink-0 items-center gap-1 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-600">
+
+                                                <FaStar />
+
+                                                {review.rating}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div className="mt-5 flex gap-1 text-sm text-amber-400">
+
+                                            {[1, 2, 3, 4, 5].map(star => (
+
+                                                <FaStar
+                                                    key={star}
+                                                    className={
+                                                        star <= Number(review.rating)
+                                                            ? "text-amber-400"
+                                                            : "text-slate-200"
+                                                    }
+                                                />
+
+                                            ))}
+
+                                        </div>
+
+
+                                        <p className="mt-5 text-sm leading-7 text-slate-600">
+
+                                            {review.review || "No written review provided."}
+
+                                        </p>
+
+                                    </article>
+
+                                ))}
+
+                            </div>
+
+                        )}
+
+                    </section>
+
+                </section>
+
+            </main>
 
             <Footer />
 

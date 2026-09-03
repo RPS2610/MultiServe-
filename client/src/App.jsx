@@ -1,31 +1,53 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+// Public Pages
 import Home from "./pages/Home";
 import Providers from "./pages/Providers";
+import ProviderDetails from "./pages/ProviderDetails";
 import Booking from "./pages/Booking";
-import MyBookings from "./pages/MyBookings";
-import ProviderDashboard from "./pages/ProviderDashboard";
-import ProtectedRoute from "./components/ProtectedRoute";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import About from "./pages/About";
+
+// Customer Pages
+import MyBookings from "./pages/MyBookings";
+
+// Provider Pages
+import ProviderDashboard from "./pages/ProviderDashboard";
+
+// Shared Pages
 import Profile from "./pages/Profile";
-import ProviderDetails from "./pages/ProviderDetails";
+import Notifications from "./pages/Notifications";
+
+// Admin Pages
 import AdminDashboard from "./pages/AdminDashboard";
 import ManageUsers from "./pages/ManageUsers";
 import ManageProviders from "./pages/ManageProviders";
 import ManageBookings from "./pages/ManageBookings";
 import ManageServices from "./pages/ManageServices";
-import Notifications from "./pages/Notifications";
-import About from "./pages/About";
+
+// Authentication
+import ProtectedRoute from "./components/ProtectedRoute";
+
 
 function App() {
     return (
         <BrowserRouter>
+
             <Routes>
+
+                {/* =====================================================
+                    PUBLIC ROUTES
+                ===================================================== */}
 
                 <Route
                     path="/"
                     element={<Home />}
+                />
+
+                <Route
+                    path="/about"
+                    element={<About />}
                 />
 
                 <Route
@@ -49,6 +71,21 @@ function App() {
                 />
 
                 <Route
+                    path="/register"
+                    element={<Register />}
+                />
+
+                <Route
+                    path="/login"
+                    element={<Login />}
+                />
+
+
+                {/* =====================================================
+                    CUSTOMER ROUTES
+                ===================================================== */}
+
+                <Route
                     path="/my-bookings"
                     element={
                         <ProtectedRoute role="customer">
@@ -56,6 +93,11 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
+
+
+                {/* =====================================================
+                    PROVIDER ROUTES
+                ===================================================== */}
 
                 <Route
                     path="/provider-dashboard"
@@ -65,6 +107,11 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
+
+
+                {/* =====================================================
+                    USER ROUTES
+                ===================================================== */}
 
                 <Route
                     path="/profile"
@@ -76,14 +123,18 @@ function App() {
                 />
 
                 <Route
-                    path="/register"
-                    element={<Register />}
+                    path="/notifications"
+                    element={
+                        <ProtectedRoute>
+                            <Notifications />
+                        </ProtectedRoute>
+                    }
                 />
 
-                <Route
-                    path="/login"
-                    element={<Login />}
-                />
+
+                {/* =====================================================
+                    ADMIN ROUTES
+                ===================================================== */}
 
                 <Route
                     path="/admin-dashboard"
@@ -110,16 +161,8 @@ function App() {
                     element={<ManageServices />}
                 />
 
-                <Route
-                    path="/notifications"
-                    element={<Notifications />}
-                />
-               <Route
-                     path="/about"
-                     element={<About />}
-                />
-
             </Routes>
+
         </BrowserRouter>
     );
 }
