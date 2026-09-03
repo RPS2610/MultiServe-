@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import {
     ArrowRight,
     Eye,
@@ -14,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { registerUser } from "../api/authApi";
+import Toast from "../components/Toast";
 
 function Register() {
     const navigate = useNavigate();
@@ -36,6 +38,33 @@ function Register() {
 
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [toast, setToast] = useState(null);
+
+    // =====================================================
+    // SHOW TOAST
+    // =====================================================
+
+    const showToast = (type, title, message) => {
+        setToast({
+            type,
+            title,
+            message,
+        });
+    };
+
+    // =====================================================
+    // AUTO HIDE TOAST
+    // =====================================================
+
+    useEffect(() => {
+        if (!toast) return;
+
+        const timer = setTimeout(() => {
+            setToast(null);
+        }, 4000);
+
+        return () => clearTimeout(timer);
+    }, [toast]);
 
     // =====================================================
     // HANDLE INPUT CHANGE
@@ -75,7 +104,11 @@ function Register() {
         // -------------------------------------------------
 
         if (!formData.name.trim()) {
-            alert("Please enter your name");
+            showToast(
+                "warning",
+                "Name required",
+                "Please enter your full name."
+            );
             return;
         }
 
@@ -87,7 +120,11 @@ function Register() {
             /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (!emailRegex.test(formData.email.trim())) {
-            alert("Please enter a valid email address");
+            showToast(
+                "warning",
+                "Invalid email",
+                "Please enter a valid email address."
+            );
             return;
         }
 
@@ -95,12 +132,13 @@ function Register() {
         // PHONE VALIDATION
         // -------------------------------------------------
 
-        const phoneRegex =
-            /^[6-9][0-9]{9}$/;
+        const phoneRegex = /^[6-9][0-9]{9}$/;
 
         if (!phoneRegex.test(formData.phone)) {
-            alert(
-                "Please enter a valid 10-digit Indian mobile number"
+            showToast(
+                "warning",
+                "Invalid mobile number",
+                "Enter a valid 10-digit Indian mobile number."
             );
             return;
         }
@@ -110,8 +148,10 @@ function Register() {
         // -------------------------------------------------
 
         if (formData.password.length < 6) {
-            alert(
-                "Password must be at least 6 characters"
+            showToast(
+                "warning",
+                "Password too short",
+                "Password must contain at least 6 characters."
             );
             return;
         }
@@ -153,21 +193,34 @@ function Register() {
             await registerUser(dataToSend);
 
             // -------------------------------------------------
-            // SUCCESS
+            // SUCCESS TOAST
             // -------------------------------------------------
 
-            alert("Registration Successful!");
+            showToast(
+                "success",
+                "Registration successful!",
+                "Your MultiServe account has been created successfully."
+            );
 
-            navigate("/login");
+            // -------------------------------------------------
+            // REDIRECT AFTER TOAST
+            // -------------------------------------------------
+
+            setTimeout(() => {
+                navigate("/login");
+            }, 1800);
+
         } catch (error) {
             console.log(
                 "Registration Error:",
                 error
             );
 
-            alert(
+            showToast(
+                "error",
+                "Registration failed",
                 error.response?.data?.message ||
-                    "Registration failed. Please try again."
+                    "Something went wrong. Please try again."
             );
         } finally {
             setLoading(false);
@@ -181,6 +234,15 @@ function Register() {
     return (
         <div className="min-h-screen bg-[#fcf8ff] flex items-center justify-center px-4 py-8 sm:py-12">
 
+            {/* =================================================
+                TOAST
+            ================================================= */}
+
+            <Toast
+                toast={toast}
+                onClose={() => setToast(null)}
+            />
+
             <div className="w-full max-w-5xl">
 
                 {/* =================================================
@@ -191,7 +253,7 @@ function Register() {
                     <button
                         type="button"
                         onClick={() => navigate("/")}
-                        className="inline-flex items-center gap-2 text-sm font-medium text-[#464555] hover:text-[#3525cd] transition-colors"
+                        className="inline-flex items-center gap-2 text-sm font-medium text-[#464555] transition-colors hover:text-[#3525cd]"
                     >
                         <span className="text-lg">←</span>
                         Back to Home
@@ -202,7 +264,7 @@ function Register() {
                     MAIN CARD
                 ================================================= */}
 
-                <div className="overflow-hidden rounded-[28px] bg-white border border-[#ece9f8] shadow-[0_20px_60px_rgba(53,37,205,0.10)]">
+                <div className="overflow-hidden rounded-[28px] border border-[#ece9f8] bg-white shadow-[0_20px_60px_rgba(53,37,205,0.10)]">
 
                     <div className="grid md:grid-cols-2">
 
@@ -210,7 +272,7 @@ function Register() {
                             LEFT BRAND PANEL
                         ================================================= */}
 
-                        <div className="relative hidden md:flex flex-col justify-between overflow-hidden bg-[#3525cd] p-10 lg:p-12 text-white">
+                        <div className="relative hidden overflow-hidden bg-[#3525cd] p-10 text-white md:flex md:flex-col md:justify-between lg:p-12">
 
                             {/* Decorative circles */}
 
@@ -245,7 +307,7 @@ function Register() {
                                         Join MultiServe
                                     </p>
 
-                                    <h2 className="max-w-md text-4xl lg:text-5xl font-bold leading-tight">
+                                    <h2 className="max-w-md text-4xl font-bold leading-tight lg:text-5xl">
                                         Get started with
                                         <span className="block text-white/80">
                                             MultiServe.
@@ -266,6 +328,7 @@ function Register() {
                                 <div className="mt-10 space-y-4">
 
                                     <div className="flex items-center gap-3">
+
                                         <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10">
                                             <ShieldCheck size={18} />
                                         </div>
@@ -273,9 +336,11 @@ function Register() {
                                         <span className="text-sm text-white/85">
                                             Trusted service professionals
                                         </span>
+
                                     </div>
 
                                     <div className="flex items-center gap-3">
+
                                         <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10">
                                             <UserRoundCheck size={18} />
                                         </div>
@@ -283,6 +348,7 @@ function Register() {
                                         <span className="text-sm text-white/85">
                                             Simple and secure booking
                                         </span>
+
                                     </div>
 
                                 </div>
@@ -327,11 +393,11 @@ function Register() {
 
                             <div className="mb-7">
 
-                                <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#1b1b24]">
+                                <h1 className="text-3xl font-bold tracking-tight text-[#1b1b24] sm:text-4xl">
                                     Create account
                                 </h1>
 
-                                <p className="mt-2 text-sm sm:text-base text-[#6b6878]">
+                                <p className="mt-2 text-sm text-[#6b6878] sm:text-base">
                                     Join MultiServe and get started today
                                 </p>
 
@@ -346,9 +412,7 @@ function Register() {
                                 className="space-y-4"
                             >
 
-                                {/* -------------------------------------------------
-                                    NAME
-                                ------------------------------------------------- */}
+                                {/* NAME */}
 
                                 <div>
 
@@ -382,9 +446,7 @@ function Register() {
 
                                 </div>
 
-                                {/* -------------------------------------------------
-                                    EMAIL
-                                ------------------------------------------------- */}
+                                {/* EMAIL */}
 
                                 <div>
 
@@ -418,9 +480,7 @@ function Register() {
 
                                 </div>
 
-                                {/* -------------------------------------------------
-                                    PHONE
-                                ------------------------------------------------- */}
+                                {/* PHONE */}
 
                                 <div>
 
@@ -434,11 +494,8 @@ function Register() {
                                     <div className="flex h-12 overflow-hidden rounded-xl border border-[#dedbea] bg-[#fcfaff] transition-all focus-within:border-[#3525cd] focus-within:bg-white focus-within:ring-4 focus-within:ring-[#3525cd]/10">
 
                                         <div className="flex items-center gap-2 border-r border-[#dedbea] bg-[#f4f1ff] px-3 text-sm font-semibold text-[#464555]">
-
                                             <Phone size={16} />
-
                                             <span>+91</span>
-
                                         </div>
 
                                         <input
@@ -459,9 +516,7 @@ function Register() {
 
                                 </div>
 
-                                {/* -------------------------------------------------
-                                    PASSWORD
-                                ------------------------------------------------- */}
+                                {/* PASSWORD */}
 
                                 <div>
 
@@ -525,9 +580,7 @@ function Register() {
 
                                 </div>
 
-                                {/* -------------------------------------------------
-                                    ROLE
-                                ------------------------------------------------- */}
+                                {/* ROLE */}
 
                                 <div>
 
@@ -569,9 +622,7 @@ function Register() {
 
                                 </div>
 
-                                {/* -------------------------------------------------
-                                    REGISTER BUTTON
-                                ------------------------------------------------- */}
+                                {/* REGISTER BUTTON */}
 
                                 <button
                                     type="submit"
@@ -601,9 +652,7 @@ function Register() {
 
                             </form>
 
-                            {/* =================================================
-                                DIVIDER
-                            ================================================= */}
+                            {/* DIVIDER */}
 
                             <div className="my-6 flex items-center gap-4">
 
@@ -617,9 +666,7 @@ function Register() {
 
                             </div>
 
-                            {/* =================================================
-                                LOGIN
-                            ================================================= */}
+                            {/* LOGIN */}
 
                             <div className="rounded-2xl border border-[#e8e5f0] bg-[#faf8ff] p-5 text-center">
 
@@ -640,7 +687,7 @@ function Register() {
 
                             </div>
 
-                            {/* Security */}
+                            {/* SECURITY */}
 
                             <div className="mt-5 flex items-center justify-center gap-2 text-xs text-[#8a8797]">
 
@@ -658,16 +705,13 @@ function Register() {
 
                 </div>
 
-                {/* =================================================
-                    FOOTER
-                ================================================= */}
+                {/* FOOTER */}
 
                 <p className="mt-5 text-center text-xs text-[#8a8797]">
                     © {new Date().getFullYear()} MultiServe. All rights reserved.
                 </p>
 
             </div>
-
         </div>
     );
 }
