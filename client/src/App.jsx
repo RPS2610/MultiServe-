@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ScrollToTop from "./components/ScrollToTop";
 
 // Public Pages
 import Home from "./pages/Home";
@@ -33,7 +34,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
     return (
         <BrowserRouter>
-
+<ScrollToTop />
             <Routes>
 
                 {/* =====================================================
