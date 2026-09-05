@@ -65,9 +65,6 @@ function Toast({ toast, onClose }) {
                         />
                     </div>
 
-                    {/* Message */}
-                    <div className="min-w-0 flex-1 pt-0.5">
-
                         <h4
                             className={`text-sm font-bold ${currentStyle.titleColor}`}
                         >
